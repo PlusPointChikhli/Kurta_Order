@@ -243,7 +243,7 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
   finalWhatsappMessage += `\n🏠 *Address:* ${address}`;
   finalWhatsappMessage += `\n📞 *Contact:* ${contact}`;
   finalWhatsappMessage += `\n🗓️ *Date:* ${new Date().toLocaleDateString("en-IN")}`;
-  finalWhatsappMessage += `\n\n📦 Thanks for your group order!`;
+
 
   const whatsappURL = `https://wa.me/918866244409?text=${encodeURIComponent(finalWhatsappMessage)}`;
   window.open(whatsappURL, "_blank");
