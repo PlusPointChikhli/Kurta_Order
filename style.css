@@ -1,0 +1,358 @@
+/* General Body and Container Styles */
+body {
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; /* Modern font stack */
+  background-color: #eef2f6; /* Lighter background */
+  color: #333;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align to top */
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.container {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 10px; /* Slightly more rounded corners */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Stronger, softer shadow */
+  width: 100%;
+  max-width: 650px; /* Slightly wider container */
+  box-sizing: border-box;
+}
+
+h1 {
+  color: #004085; /* Darker blue for main heading */
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.2em; /* Larger main heading */
+  font-weight: 600; /* Semi-bold */
+}
+
+h2, h3, h4 {
+  color: #0056b3;
+  text-align: left; /* Align category headers to left */
+  margin-top: 25px; /* More space above sections */
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+/* Form Sections Styling */
+.form-section, .customer-section, .pricing-section, .image-preview, .summary-section {
+  margin-bottom: 25px;
+  padding: 20px;
+  border: 1px solid #d1e0ed; /* Lighter, subtle border */
+  border-radius: 8px; /* Consistent border-radius */
+  background-color: #f8faff; /* Very light blue background for sections */
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600; /* Semi-bold labels */
+  color: #4a4a4a;
+  font-size: 0.95em;
+}
+
+select, input[type="text"], input[type="tel"], textarea {
+  width: calc(100% - 22px); /* Account for padding and border */
+  padding: 12px;
+  margin-bottom: 12px; /* Reduced for compactness */
+  border: 1px solid #b3d4f5; /* Light blue border for inputs */
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 1em; /* Standard font size */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+select:focus, input:focus, textarea:focus {
+  border-color: #007bff; /* Highlight on focus */
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  outline: none; /* Remove default outline */
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px; /* Slightly larger min-height */
+}
+
+/* Image Preview */
+.image-preview {
+  text-align: center;
+  margin-bottom: 30px;
+  background-color: #ffffff; /* White background for image area */
+  padding: 10px; /* Reduced padding to give image more space if needed */
+}
+
+#previewImage {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Soft shadow for image */
+  max-height: 400px; /* <--- CHANGE THIS VALUE TO MAKE IT LARGER (e.g., 400px, 500px, etc.) */
+  object-fit: contain; /* Ensure image fits without cropping */
+}
+
+
+/* Pricing Section - List View Fix (Compactness & Polish) */
+.pricing-section h3, .pricing-section h4 {
+  color: #007bff; /* Blue for sub-headings */
+  margin-top: 10px; /* Reduced for compactness */
+  margin-bottom: 8px; /* Reduced for compactness */
+  font-size: 1.15em;
+  border-bottom: 1px solid #e0e0e0; /* Separator for categories */
+  padding-bottom: 5px;
+}
+.pricing-section h3:first-child, .pricing-section h4:first-child {
+    margin-top: 0; /* No top margin for the very first header in the section */
+}
+
+.category-sizes {
+  display: block; /* Forces children to stack vertically */
+  margin-bottom: 10px; /* Reduced for compactness */
+  padding: 0;
+}
+
+.size-item {
+  display: flex; /* Keeps label, input, and spans inline */
+  align-items: center; /* Vertically align content */
+  gap: 10px; /* Reduced for compactness */
+  padding: 6px 0; /* Reduced for compactness (Vertical padding for each item) */
+  border-bottom: 1px solid #eeeeee; /* POLISH: Lighter solid line instead of dashed */
+  margin-bottom: 2px; /* Reduced for compactness (Space between each size-item) */
+  background-color: #ffffff; /* White background for individual items */
+  transition: background-color 0.2s ease, box-shadow 0.2s ease; /* POLISH: Smooth transition for hover */
+}
+
+.size-item:last-child {
+  border-bottom: none; /* No border for the last item in a category */
+}
+
+/* POLISH: Hover effect for size-item */
+.size-item:hover {
+  background-color: #f0f7ff; /* Very light blue on hover */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow on hover */
+}
+
+
+.size-item label {
+  flex-shrink: 0; /* Prevent label from shrinking */
+  width: 50px; /* Reduced for compactness */
+  text-align: right; /* Align label text to the right */
+  margin-right: 0; /* Reset default margin */
+  font-weight: normal; /* Labels within item should not be bold */
+  color: #333;
+}
+
+
+.size-item input[type="number"] {
+  flex-grow: 1; /* Allow input to grow */
+  max-width: 50px; /* Reduced for compactness */
+  min-width: 40px;
+  padding: 6px; /* Reduced for compactness */
+  margin-bottom: 0;
+  font-size: 14px; /* SLIGHTLY REDUCED for compactness */
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+
+.size-item .mrp-price {
+  text-decoration: line-through;
+  color: #888; /* Make it slightly lighter to indicate it's not the final price */
+  margin-right: 8px; /* Reduced for compactness */
+  font-size: 0.9em; /* SLIGHTLY REDUCED for compactness */
+}
+
+.size-item .discount-price {
+  font-weight: bold; /* Make the discount price stand out */
+  color: #28a745; /* Green color for the final price */
+  font-size: 0.95em; /* SLIGHTLY REDUCED for compactness */
+}
+
+.size-item span {
+  /* Specific classes .mrp-price and .discount-price will override more general rules */
+}
+
+
+/* Buttons */
+.action-button {
+  display: block;
+  width: 100%;
+  padding: 15px 20px;
+  margin-top: 25px; /* More space above buttons */
+  border: none;
+  border-radius: 8px; /* Slightly more rounded buttons */
+  background-color: #007bff;
+  color: white;
+  font-size: 1.1em; /* Slightly larger font */
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.action-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px); /* Subtle lift effect */
+}
+
+.primary-button {
+  background-color: #28a745; /* Green for WhatsApp send */
+}
+
+.primary-button:hover {
+  background-color: #218838;
+}
+
+/* Order Summary Section (Table Layout Fixes) */
+.summary-section {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  background-color: #f0f8ff; /* Lighter blue for summary */
+  border: 1px solid #a0cbed; /* Blue border */
+  border-radius: 8px; /* Consistent border-radius */
+  padding: 20px; /* Ensure consistent padding with other sections */
+}
+
+.summary-section h3 {
+  color: #004085;
+  border-bottom: 2px solid #007bff; /* Stronger border for summary heading */
+  padding-bottom: 10px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.summary-section h4 {
+  color: #007bff;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  font-size: 1.05em;
+}
+
+.summary-section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 0.95em;
+  table-layout: fixed; /* Columns will take fixed width, helping alignment */
+}
+
+.summary-section th, .summary-section td {
+  border: 1px solid #e0eaf3; /* Lighter table borders */
+  padding: 8px; /* Slightly reduced padding for compactness within table */
+  vertical-align: middle; /* Vertically align content in the middle */
+  background-color: #ffffff; /* Default background for cells */
+}
+
+.summary-section th {
+  background-color: #e9f5ff; /* Light blue header for table */
+  font-weight: 600;
+  color: #0056b3;
+  white-space: nowrap; /* Prevent header text from wrapping */
+  overflow: hidden; /* Hide overflow if text is too long */
+  text-overflow: ellipsis; /* Show ellipsis if text is hidden */
+}
+
+/* Specific column alignments for better readability */
+.summary-section th:nth-child(1),
+.summary-section td:nth-child(1) { /* Size column */
+  text-align: center; /* Center align Size */
+  width: 15%; /* Adjust width as needed */
+}
+
+.summary-section th:nth-child(2),
+.summary-section td:nth-child(2) { /* Qty column */
+  text-align: center; /* Center align Quantity */
+  width: 10%; /* Adjust width as needed */
+}
+
+.summary-section th:nth-child(3),
+.summary-section td:nth-child(3) { /* MRP (per) column */
+  text-align: right; /* Right align prices */
+  width: 25%; /* Adjust width as needed */
+}
+
+.summary-section th:nth-child(4),
+.summary-section td:nth-child(4) { /* Discount Price (per) column */
+  text-align: right; /* Right align prices */
+  width: 25%; /* Adjust width as needed */
+}
+
+.summary-section th:nth-child(5),
+.summary-section td:nth-child(5) { /* Line Total column */
+  text-align: right; /* Right align prices */
+  width: 25%; /* Adjust width as needed */
+}
+
+.summary-section p {
+  margin-top: 15px;
+  font-size: 1.15em;
+  font-weight: 700; /* Bolder totals */
+  color: #004085;
+  text-align: right; /* Align totals to the right */
+  padding-right: 8px; /* Small padding for visual balance with table content */
+}
+
+.summary-section p strong {
+    color: #002e63; /* Even darker for strong text */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+  .container {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.8em;
+  }
+
+  .size-item {
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens if necessary */
+    justify-content: center; /* Center items when wrapped */
+    text-align: center;
+  }
+
+  .size-item label, .size-item input[type="number"], .size-item span {
+    width: auto; /* Allow elements to take natural width */
+    text-align: center;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .size-item input[type="number"] {
+    max-width: 100px; /* Adjust max-width for input */
+  }
+
+  .size-item label {
+      width: 100%; /* Label takes full width on small screens */
+      margin-bottom: 5px;
+      text-align: center;
+  }
+
+  /* Responsive adjustments for the summary table on small screens */
+  .summary-section th {
+      font-size: 0.8em; /* Smaller font for headers on tiny screens */
+      padding: 4px; /* Less padding on headers */
+  }
+  .summary-section td {
+      font-size: 0.9em; /* Slightly smaller text in cells */
+      padding: 6px; /* Less padding in cells */
+  }
+}
+
+/* Error Message Styling */
+.error-message {
+    color: #dc3545; /* Red color for error messages */
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    margin-top: 15px;
+}

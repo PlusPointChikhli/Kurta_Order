@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PLUS POINT Group Kurta Order</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Group Kurta Order</h1>
+     <div class="image-preview">
+      <img id="previewImage" src="Catlogue_icon/default.png" alt="Product Preview" />
+    </div>
+
+    <div class="form-section">
+      <label for="typeSelect">Kurta Type:</label>
+      <select id="typeSelect"></select>
+
+      <label for="colorSelect">Color:</label>
+      <select id="colorSelect"></select>
+    </div>
+
+    
+    <div id="pricingOutputDiv" class="pricing-section">
+     <p>Please select a <strong>Type</strong> and <strong>Color</strong> to see pricing and sizes.</p>
+
+    <button id="orderSummaryButton" class="action-button">Show Order Summary</button>
+
+    <div id="orderSummaryOutput" class="summary-section">
+      </div>
+
+    <div class="customer-section">
+      <h2>Your Details</h2>
+      <label for="groupName">Group Name:</label>
+      <input type="text" id="groupName" placeholder="Enter your Group Name" />
+
+      <label for="deliveryAddress">Address:</label>
+      <textarea id="deliveryAddress" rows="3" placeholder="Enter full address"></textarea>
+
+      <label for="contactNumber">Contact Number:</label>
+      <input type="tel" id="contactNumber" placeholder="Enter your contact number" />
+    </div>
+
+    <button id="sendOrderWhatsapp" class="action-button primary-button">Send Order on WhatsApp</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
