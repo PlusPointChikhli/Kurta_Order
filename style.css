@@ -1,455 +1,408 @@
-/* General Body and Container Styles */
+/* General Body Styles */
 body {
-  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; /* Modern font stack */
-  background-color: #eef2f6; /* Lighter background */
-  color: #333;
-  margin: 0;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* Align to top */
-  min-height: 100vh;
-  box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #f7f0e3 0%, #e8d7b9 100%); /* Soft, warm gradient */
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to the top */
+    min-height: 100vh; /* Ensure it takes full viewport height */
+    box-sizing: border-box;
 }
 
 .container {
-  background-color: #ffffff;
-  padding: 30px;
-  border-radius: 10px; /* Slightly more rounded corners */
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Stronger, softer shadow */
-  width: 100%;
-  max-width: 650px; /* Slightly wider container */
-  box-sizing: border-box;
+    background-color: #ffffff; /* Clean white background for the container */
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Softer, more pronounced shadow */
+    max-width: 900px; /* Wider container for better layout */
+    width: 100%;
+    margin-top: 20px; /* Space from the top of the viewport */
+    border: 1px solid #ddd; /* Subtle border */
 }
 
+/* Headings */
 h1 {
-  color: #004085; /* Darker blue for main heading */
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 2.2em; /* Larger main heading */
-  font-weight: 600; /* Semi-bold */
+    text-align: center;
+    color: #8B0000; /* Deep Maroon/Red - Traditional feel */
+    margin-bottom: 25px;
+    font-size: 2.5em;
+    font-family: 'Georgia', serif; /* Slightly more formal, traditional font */
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-h2, h3, h4 {
-  color: #0056b3;
-  text-align: left; /* Align category headers to left */
-  margin-top: 25px; /* More space above sections */
-  margin-bottom: 15px;
-  font-weight: 500;
+h2 {
+    color: #D2691E; /* Chocolate/Orange - Warm & inviting */
+    border-bottom: 2px solid #f0e0d0; /* Soft separator */
+    padding-bottom: 10px;
+    margin-top: 30px;
+    font-size: 1.8em;
 }
 
-/* Form Sections Styling */
-.form-section, .customer-section, .pricing-section, .image-preview, .summary-section {
-  margin-bottom: 25px;
-  padding: 20px;
-  border: 1px solid #d1e0ed; /* Lighter, subtle border */
-  border-radius: 8px; /* Consistent border-radius */
-  background-color: #f8faff; /* Very light blue background for sections */
+h3 {
+    color: #B8860B; /* Dark Goldenrod - Rich and festive */
+    margin-bottom: 15px;
+    font-size: 1.5em;
 }
 
-label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600; /* Semi-bold labels */
-  color: #4a4a4a;
-  font-size: 0.95em;
+h4 {
+    color: #CD5C5C; /* Indian Red - For category titles */
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1.2em;
 }
 
-/* General input and select styles */
-select, input[type="text"], input[type="tel"], textarea, input[type="number"] {
-  width: calc(100% - 22px); /* Account for padding and border */
-  padding: 12px;
-  margin-bottom: 12px; /* Reduced for compactness */
-  border: 1px solid #b3d4f5; /* Light blue border for inputs */
-  border-radius: 6px;
-  box-sizing: border-box;
-  font-size: 1em; /* Standard font size */
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-select:focus, input:focus, textarea:focus {
-  border-color: #007bff; /* Highlight on focus */
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-  outline: none; /* Remove default outline */
-}
-
-textarea {
-  resize: vertical;
-  min-height: 80px; /* Slightly larger min-height */
-}
-
-/* Image Preview */
+/* Image Preview Section */
 .image-preview {
-  text-align: center;
-  margin-bottom: 30px;
-  background-color: #ffffff; /* White background for image area */
-  padding: 10px; /* Reduced padding to give image more space if needed */
+    text-align: center;
+    margin-bottom: 30px;
+    background-color: #fcefe4; /* Light orange-ish background */
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05); /* Inner shadow for depth */
 }
 
 #previewImage {
-  max-width: 100%;
-  height: auto;
-  border-radius: 6px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Soft shadow for image */
-  max-height: 400px; /* Adjust this value if you want a larger/smaller preview */
-  object-fit: contain; /* Ensure image fits without cropping */
+    max-width: 100%;
+    height: auto;
+    max-height: 350px; /* Constrain image height */
+    border-radius: 8px;
+    border: 3px solid #FFD700; /* Gold border - festive highlight */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
 }
 
-/* --- REVISED PRICING SECTION STYLES FOR SINGLE ITEM SELECTION --- */
-/* This section now contains the display for selected size's pricing and quantity input */
-#pricingOutputDiv h3, #pricingOutputDiv h4 {
-    /* These specific headers were removed from JS generation, but keeping rules if needed elsewhere */
-    color: #007bff;
-    margin-top: 10px;
-    margin-bottom: 8px;
-    font-size: 1.15em;
-    border-bottom: 1px solid #e0e0e0;
-    padding-bottom: 5px;
-}
-#pricingOutputDiv h3:first-child, #pricingOutputDiv h4:first-child {
-    margin-top: 0;
+#previewImage:hover {
+    transform: scale(1.02); /* Slight zoom on hover */
 }
 
-#selectedSizePricing {
+/* Form Section - Dropdowns */
+.form-section {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping for responsiveness */
+    gap: 20px; /* Space between items */
+    margin-bottom: 25px;
+    padding: 15px;
+    background-color: #fffaf0; /* Floral white - subtle background */
+    border-radius: 10px;
+    border: 1px solid #f0e0d0;
+    align-items: center; /* Vertically align labels and selects */
+}
+
+.form-section label {
+    flex: 1 1 120px; /* Grow, shrink, base width */
+    font-weight: bold;
+    color: #5C4033; /* Dark brown */
+    font-size: 1.1em;
+}
+
+.form-section select {
+    flex: 2 1 200px; /* Allow select to take more space */
+    padding: 12px 15px;
+    border: 2px solid #FFA07A; /* Light Salmon - inviting border */
+    border-radius: 8px;
     background-color: #ffffff;
-    border: 1px solid #e0e0e0;
+    font-size: 1em;
+    color: #444;
+    cursor: pointer;
+    appearance: none; /* Remove default arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%204%205%22%3E%3Cpath%20fill%3D%22%23444%22%20d%3D%22M2%200L0%202h4zm0%205L0%203h4z%22%2F%3E%3C%2Fsvg%3E'); /* Custom arrow */
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 8px 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-section select:focus {
+    border-color: #FF6347; /* Tomato - on focus */
+    box-shadow: 0 0 0 3px rgba(255, 99, 71, 0.2);
+    outline: none;
+}
+
+/* Pricing Section */
+.pricing-section {
+    background-color: #fdfaf5; /* Very light, almost white background */
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #feeeca; /* Soft, warm border */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.pricing-section p {
+    text-align: center;
+    font-size: 1.1em;
+    color: #666;
+    margin: 10px 0;
+}
+
+.category-sizes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive grid for sizes */
+    gap: 15px;
+    margin-top: 15px;
+    padding: 10px;
+    border-top: 1px dashed #e0d0c0; /* Subtle separator */
+    padding-top: 20px;
+}
+
+.size-item {
+    background-color: #ffffff;
+    border: 1px solid #FFDAB9; /* Peach Puff - soft border */
     border-radius: 8px;
     padding: 15px;
-    margin-top: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-#selectedSizePricing p {
-    margin-bottom: 8px;
-    font-size: 1.1em;
-    color: #333;
+.size-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-#selectedSizePricing p strong {
-    color: #0056b3;
-}
-
-#selectedSizePricing #displayMRP {
-    text-decoration: line-through;
-    color: #888;
-    margin-left: 5px;
-}
-
-#selectedSizePricing #displayDiscountPrice {
+.size-item label {
     font-weight: bold;
-    color: #28a745;
-    margin-left: 5px;
+    color: #8B4513; /* Saddle Brown */
+    font-size: 1.05em;
 }
 
-#selectedSizePricing label[for="quantityInput"] {
-    display: inline-block; /* Keep label inline with input for compact display */
-    width: auto;
-    margin-right: 10px;
-    margin-bottom: 0;
-    font-weight: 500;
-}
-
-#quantityInput {
-    width: 80px; /* Specific width for quantity input */
-    padding: 8px;
-    text-align: center;
-    margin-bottom: 0; /* No bottom margin here for inline elements */
-    display: inline-block; /* Crucial for aligning with button */
-    vertical-align: middle; /* Aligns content in the middle */
-}
-
-#addToCartSingleBtn {
-    display: inline-block; /* Make it inline with quantity */
-    vertical-align: middle; /* Align with input */
-    margin-left: 15px;
-    padding: 8px 15px;
-    border: none;
+.qty-input {
+    width: 100%; /* Full width within its container */
+    padding: 10px;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    font-size: 0.95em;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
+    font-size: 1em;
+    text-align: center;
+    -moz-appearance: textfield; /* Hide arrows on Firefox */
 }
 
-#addToCartSingleBtn:hover {
-    background-color: #0056b3;
-    transform: translateY(-1px);
+/* Hide arrows for Chrome, Safari, Edge */
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
-/* --- END REVISED PRICING SECTION STYLES --- */
 
 
-/* Buttons (General Action Buttons) */
+.mrp-price {
+    color: #888;
+    text-decoration: line-through; /* Strikethrough for MRP */
+    font-size: 0.9em;
+}
+
+.discount-price {
+    color: #228B22; /* Forest Green - strong highlight for offer price */
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+/* Action Buttons */
 .action-button {
-  display: block;
-  width: 100%;
-  padding: 15px 20px;
-  margin-top: 25px; /* More space above buttons */
-  border: none;
-  border-radius: 8px; /* Slightly more rounded buttons */
-  background-color: #007bff;
-  color: white;
-  font-size: 1.1em; /* Slightly larger font */
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  text-align: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: block; /* Make buttons block level */
+    width: fit-content; /* Adjust width to content */
+    margin: 20px auto; /* Center the buttons */
+    padding: 14px 30px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.action-button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px); /* Subtle lift effect */
+#orderSummaryButton {
+    background-color: #4682B4; /* Steel Blue - professional but appealing */
+    color: white;
+}
+
+#orderSummaryButton:hover {
+    background-color: #366795;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 .primary-button {
-  background-color: #28a745; /* Green for WhatsApp send */
+    background-color: #FF8C00; /* Dark Orange - vibrant and festive for WhatsApp */
+    color: white;
+    font-size: 1.2em;
+    padding: 15px 35px;
+    margin-top: 30px;
+    box-shadow: 0 6px 15px rgba(255, 140, 0, 0.3); /* Orange shadow */
 }
 
 .primary-button:hover {
-  background-color: #218838;
+    background-color: #E67A00;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 140, 0, 0.4);
 }
 
 
-/* --- CART-SPECIFIC BUTTONS --- */
-/* This is for the 'Remove' buttons inside the summary table */
-.remove-from-cart-btn {
-    background-color: #dc3545; /* Red for remove */
-    color: white;
-    padding: 4px 8px; /* Even smaller for table cell */
-    border: none;
-    border-radius: 5px;
-    font-size: 0.8em;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    white-space: nowrap; /* Prevent button text from wrapping */
-}
-
-.remove-from-cart-btn:hover {
-    background-color: #c82333;
-    transform: translateY(-1px);
-}
-
-/* Style for the Clear Cart Button */
-#clearCartButton {
-    background-color: #f44336; /* Red */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 20px; /* Add some space above it */
-    display: block; /* Make it a block element to take full width */
-    width: 100%;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-}
-
-#clearCartButton:hover {
-    background-color: #da190b;
-}
-/* --- END CART-SPECIFIC BUTTONS --- */
-
-
-/* Order Summary Section (Table Layout and Grouping) */
+/* Summary Section */
 .summary-section {
-  margin-top: 30px;
-  margin-bottom: 30px;
-  background-color: #f0f8ff; /* Lighter blue for summary */
-  border: 1px solid #a0cbed; /* Blue border */
-  border-radius: 8px; /* Consistent border-radius */
-  padding: 20px; /* Ensure consistent padding with other sections */
-}
-
-.summary-section h2 {
-    color: #004085;
-    text-align: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #007bff;
-}
-
-.summary-section h3 {
-  color: #004085;
-  margin-top: 0; /* Reset for product group title */
-  margin-bottom: 10px;
-  font-size: 1.2em;
-}
-
-.summary-section h4 {
-  color: #007bff;
-  margin-top: 15px;
-  margin-bottom: 10px;
-  font-size: 1.05em;
+    background-color: #fffde7; /* Light yellow tint - like parchment */
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #ffeeba; /* Soft golden border */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .summary-section table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-  font-size: 0.95em;
-  table-layout: fixed; /* Columns will take fixed width, helping alignment */
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .summary-section th, .summary-section td {
-  border: 1px solid #e0eaf3; /* Lighter table borders */
-  padding: 8px; /* Slightly reduced padding for compactness within table */
-  vertical-align: middle; /* Vertically align content in the middle */
-  background-color: #ffffff; /* Default background for cells */
+    border: 1px solid #eee;
+    padding: 10px 15px;
+    text-align: left;
 }
 
 .summary-section th {
-  background-color: #e9f5ff; /* Light blue header for table */
-  font-weight: 600;
-  color: #0056b3;
-  white-space: nowrap; /* Prevent header text from wrapping */
-  overflow: hidden; /* Hide overflow if text is too long */
-  text-overflow: ellipsis; /* Show ellipsis if text is hidden */
+    background-color: #f5f5f5;
+    color: #555;
+    font-weight: bold;
 }
 
-/* Specific column alignments for better readability */
-.summary-section th:nth-child(1),
-.summary-section td:nth-child(1) { /* Size column */
-  text-align: center;
-  width: 15%;
+.summary-section tr:nth-child(even) {
+    background-color: #f9f9f9;
 }
-
-.summary-section th:nth-child(2),
-.summary-section td:nth-child(2) { /* Qty column */
-  text-align: center;
-  width: 10%;
-}
-
-.summary-section th:nth-child(3),
-.summary-section td:nth-child(3) { /* MRP (per) column */
-  text-align: right;
-  width: 25%;
-}
-
-.summary-section th:nth-child(4),
-.summary-section td:nth-child(4) { /* Discount Price (per) column */
-  text-align: right;
-  width: 25%;
-}
-
-.summary-section th:nth-child(5),
-.summary-section td:nth-child(5) { /* Line Total column */
-  text-align: right;
-  width: 25%;
-}
-
-.summary-section th:nth-child(6),
-.summary-section td:nth-child(6) { /* Remove button column */
-    text-align: center;
-    width: 10%;
-}
-
 
 .summary-section p {
-  margin-top: 15px;
-  font-size: 1.15em;
-  font-weight: 700; /* Bolder totals */
-  color: #004085;
-  text-align: right; /* Align totals to the right */
-  padding-right: 8px; /* Small padding for visual balance with table content */
+    font-size: 1.1em;
+    margin-top: 10px;
+    color: #444;
 }
 
 .summary-section p strong {
-    color: #002e63; /* Even darker for strong text */
+    color: #8B0000; /* Strong red for totals */
 }
 
-/* For grouping products in summary */
-.product-group-summary {
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 2px dashed #d1e0ed; /* Dotted line separator */
-}
-
-.product-group-summary:last-of-type {
-    border-bottom: none; /* No border for the very last product group */
-}
-
-.overall-summary {
-    padding-top: 15px;
-    border-top: 2px solid #0056b3; /* Stronger line before overall totals */
-    margin-top: 25px;
-    text-align: right;
-}
-
-/* Info Message Styling (for empty cart or instructions) */
-.info-message {
-    color: #0056b3; /* Blue for info messages */
-    font-weight: bold;
-    text-align: center;
-    padding: 10px;
-    background-color: #e0f2f7;
-    border: 1px solid #b3e0ff;
-    border-radius: 5px;
-    margin-top: 15px;
-}
-
-/* Error Message Styling */
 .error-message {
-    color: #dc3545; /* Red color for error messages */
+    color: red;
     font-weight: bold;
     text-align: center;
     padding: 10px;
-    background-color: #f8d7da;
-    border: 1px solid #f5c6cb;
+    border: 1px solid red;
+    background-color: #ffebeb;
     border-radius: 5px;
-    margin-top: 15px;
 }
 
+/* Customer Details Section */
+.customer-section {
+    background-color: #f7f9fc; /* Light blue-ish tint */
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #e0e6ec;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    margin-top: 30px;
+}
+
+.customer-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #5C4033; /* Dark brown */
+    font-size: 1.1em;
+}
+
+.customer-section input[type="text"],
+.customer-section input[type="tel"],
+.customer-section textarea {
+    width: calc(100% - 24px); /* Full width minus padding */
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+    box-sizing: border-box; /* Include padding in width */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.customer-section input[type="text"]:focus,
+.customer-section input[type="tel"]:focus,
+.customer-section textarea:focus {
+    border-color: #FF6347; /* Tomato */
+    box-shadow: 0 0 0 3px rgba(255, 99, 71, 0.2);
+    outline: none;
+}
+
+.customer-section textarea {
+    resize: vertical; /* Allow vertical resizing */
+    min-height: 80px;
+}
 
 /* Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 25px 20px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    .form-section {
+        flex-direction: column; /* Stack elements on smaller screens */
+        gap: 15px;
+    }
+
+    .form-section label,
+    .form-section select {
+        width: 100%; /* Full width */
+        flex: none; /* Disable flex shrinking/growing */
+    }
+
+    .category-sizes {
+        grid-template-columns: 1fr; /* Single column on small screens */
+    }
+
+    .action-button {
+        width: 90%; /* Make buttons wider */
+        padding: 12px 20px;
+    }
+
+    .primary-button {
+        font-size: 1.1em;
+        padding: 14px 25px;
+    }
+}
+
 @media (max-width: 480px) {
-  .container {
-    padding: 20px;
-  }
+    body {
+        padding: 10px;
+    }
 
-  h1 {
-    font-size: 1.8em;
-  }
+    .container {
+        padding: 15px;
+        border-radius: 10px;
+    }
 
-  /* Specific adjustments for the single-item pricing section */
-  #selectedSizePricing label, #quantityInput, #addToCartSingleBtn {
-      display: block; /* Stack elements vertically */
-      width: 100%; /* Take full width */
-      text-align: center; /* Center their content */
-      margin-left: 0;
-      margin-right: 0;
-      margin-bottom: 10px; /* Add spacing between stacked elements */
-  }
-  #selectedSizePricing label {
-      text-align: left; /* Keep label text left-aligned despite block display */
-  }
-  #quantityInput {
-      max-width: none; /* Remove any max-width constraints */
-  }
+    h1 {
+        font-size: 1.8em;
+    }
 
-  /* Responsive adjustments for the summary table on small screens */
-  .summary-section table {
-      font-size: 0.8em; /* Smaller font for entire table */
-  }
-  .summary-section th, .summary-section td {
-      padding: 5px; /* Less padding in cells */
-  }
-  /* Hide MRP column on very small screens for compactness */
-  .summary-section th:nth-child(3),
-  .summary-section td:nth-child(3) {
-      display: none;
-  }
-  /* Adjust widths for remaining columns after hiding MRP */
-  .summary-section th:nth-child(4), /* Offer Price column */
-  .summary-section td:nth-child(4) {
-      width: 35%;
-  }
-  .summary-section th:nth-child(5), /* Total column */
-  .summary-section td:nth-child(5) {
-      width: 35%;
-  }
-  .summary-section th:nth-child(6), /* Remove button column */
-  .summary-section td:nth-child(6) {
-      width: 15%; /* Give more space for the button when other columns are hidden */
-  }
+    .pricing-section,
+    .summary-section,
+    .customer-section {
+        padding: 15px;
+    }
+
+    .summary-section th, .summary-section td {
+        padding: 8px 10px;
+        font-size: 0.9em;
+    }
 }
