@@ -176,6 +176,59 @@ textarea {
   /* Specific classes .mrp-price and .discount-price will override more general rules */
 }
 
+/* --- NEW CSS FOR CART BUTTONS --- */
+.add-to-cart-btn, .remove-from-cart-btn {
+    padding: 6px 10px; /* Smaller padding for inline buttons */
+    border: none;
+    border-radius: 5px;
+    font-size: 0.85em; /* Smaller font size for action */
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    white-space: nowrap; /* Prevent button text from wrapping */
+}
+
+.add-to-cart-btn {
+    background-color: #007bff; /* Blue for add */
+    color: white;
+    margin-left: auto; /* Push button to the right */
+}
+
+.add-to-cart-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+.remove-from-cart-btn {
+    background-color: #dc3545; /* Red for remove */
+    color: white;
+    padding: 4px 8px; /* Even smaller for table cell */
+    font-size: 0.8em;
+}
+
+.remove-from-cart-btn:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+}
+
+/* Style for the Clear Cart Button (already in JS but added here for completeness) */
+#clearCartButton {
+    background-color: #f44336; /* Red */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 20px; /* Add some space above it */
+    display: block; /* Make it a block element to take full width */
+    width: 100%;
+    font-size: 1em;
+}
+
+#clearCartButton:hover {
+    background-color: #da190b;
+}
+/* --- END NEW CSS --- */
+
 
 /* Buttons */
 .action-button {
@@ -288,6 +341,14 @@ textarea {
   width: 25%; /* Adjust width as needed */
 }
 
+/* NEW: Style for the remove button column in summary table */
+.summary-section th:nth-child(6),
+.summary-section td:nth-child(6) { /* Remove button column */
+    text-align: center;
+    width: 10%; /* Give enough space for the button */
+}
+
+
 .summary-section p {
   margin-top: 15px;
   font-size: 1.15em;
@@ -300,6 +361,37 @@ textarea {
 .summary-section p strong {
     color: #002e63; /* Even darker for strong text */
 }
+
+/* For grouping products in summary */
+.product-group-summary {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px dashed #d1e0ed; /* Dotted line separator */
+}
+
+.product-group-summary:last-of-type {
+    border-bottom: none; /* No border for the very last product group */
+}
+
+.overall-summary {
+    padding-top: 15px;
+    border-top: 2px solid #0056b3; /* Stronger line before overall totals */
+    margin-top: 25px;
+    text-align: right;
+}
+
+/* Info Message Styling (for empty cart) */
+.info-message {
+    color: #0056b3; /* Blue for info messages */
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    background-color: #e0f2f7;
+    border: 1px solid #b3e0ff;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+
 
 /* Responsive Adjustments */
 @media (max-width: 480px) {
@@ -335,15 +427,31 @@ textarea {
   }
 
   /* Responsive adjustments for the summary table on small screens */
-  .summary-section th {
-      font-size: 0.8em; /* Smaller font for headers on tiny screens */
-      padding: 4px; /* Less padding on headers */
+  .summary-section table {
+      font-size: 0.8em; /* Smaller font for entire table */
   }
-  .summary-section td {
-      font-size: 0.9em; /* Slightly smaller text in cells */
-      padding: 6px; /* Less padding in cells */
+  .summary-section th, .summary-section td {
+      padding: 5px; /* Less padding in cells */
+  }
+  .summary-section th:nth-child(3),
+  .summary-section td:nth-child(3) {
+      display: none; /* Hide MRP column on very small screens for compactness */
+  }
+  .summary-section th:nth-child(4),
+  .summary-section td:nth-child(4) { /* Offer Price column takes more space */
+      width: 35%;
+  }
+  .summary-section th:nth-child(5),
+  .summary-section td:nth-child(5) { /* Total column takes more space */
+      width: 35%;
+  }
+  /* Ensure add-to-cart button also responsive */
+  .add-to-cart-btn {
+      width: 100%; /* Full width for the button */
+      margin-top: 10px; /* Space above it */
   }
 }
+
 
 /* Error Message Styling */
 .error-message {
