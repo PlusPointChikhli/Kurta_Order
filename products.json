@@ -15,13 +15,13 @@
         "48": { "MRP": 280 }
       },
       "Ladies": {
-        "36_S":     { "MRP": 240 },
-        "38_M":     { "MRP": 240 },
-        "40_L":     { "MRP": 240 },
-        "42_XL":    { "MRP": 240 },
-        "44_XXL":   { "MRP": 240 },
-        "46_XXXL":  { "MRP": 260 },
-        "48_XXXXL": { "MRP": 260 }
+        "S":   { "MRP": 240 },
+        "M":   { "MRP": 240 },
+        "L":   { "MRP": 240 },
+        "XL":  { "MRP": 240 },
+        "XXL": { "MRP": 240 },
+        "3XL": { "MRP": 260 },
+        "4XL": { "MRP": 260 }
       },
       "Kids": {
         "22": { "MRP": 160 },
@@ -32,16 +32,16 @@
       }
     },
     "variants": [
-      { "id": "P02", "number": "02", "color": "White Plain",    "page": 1 },
-      { "id": "P03", "number": "03", "color": "Maroon Plain",   "page": 2 },
-      { "id": "P04", "number": "04", "color": "Yellow Plain",   "page": 3 },
-      { "id": "P05", "number": "05", "color": "Black Plain",    "page": 4 },
-      { "id": "P06", "number": "06", "color": "Sky Plain",      "page": 5 },
-      { "id": "P07", "number": "07", "color": "B. Green Plain", "page": 6 },
-      { "id": "P08", "number": "08", "color": "Rama Plain",     "page": 7 },
-      { "id": "P09", "number": "09", "color": "Blue Plain",     "page": 8 },
-      { "id": "P01", "number": "01", "color": "Orange Plain",   "page": 9 },
-      { "id": "P10", "number": "10", "color": "Wine Plain",     "page": 10 }
+      { "id": "P02", "number": "02", "color": "White",    "page": 1 },
+      { "id": "P03", "number": "03", "color": "Maroon",   "page": 2 },
+      { "id": "P04", "number": "04", "color": "Yellow",   "page": 3 },
+      { "id": "P05", "number": "05", "color": "Black",    "page": 4 },
+      { "id": "P06", "number": "06", "color": "Skyblue",      "page": 5 },
+      { "id": "P07", "number": "07", "color": "Bottle Green", "page": 6 },
+      { "id": "P08", "number": "08", "color": "Rama",     "page": 7 },
+      { "id": "P09", "number": "09", "color": "Navy Blue",     "page": 8 },
+      { "id": "P01", "number": "01", "color": "Orange",   "page": 9 },
+      { "id": "P10", "number": "10", "color": "Wine",     "page": 10 }
     ]
   },
   {
@@ -60,13 +60,13 @@
         "48": { "MRP": 600 }
       },
       "Ladies": {
-        "36_S":     { "MRP": 520 },
-        "38_M":     { "MRP": 520 },
-        "40_L":     { "MRP": 520 },
-        "42_XL":    { "MRP": 520 },
-        "44_XXL":   { "MRP": 520 },
-        "46_XXXL":  { "MRP": 520 },
-        "48_XXXXL": { "MRP": 520 }
+        "S":   { "MRP": 520 },
+        "M":   { "MRP": 520 },
+        "L":   { "MRP": 520 },
+        "XL":  { "MRP": 520 },
+        "XXL": { "MRP": 520 },
+        "3XL": { "MRP": 520 },
+        "4XL": { "MRP": 520 }
       },
       "Kids": {
         "22": { "MRP": 360 },
@@ -78,10 +78,10 @@
     },
     "variants": [
       { "id": "L11", "number": "11", "color": "Wine",     "page": 1 },
-      { "id": "L12", "number": "12", "color": "B. Green", "page": 2 },
+      { "id": "L12", "number": "12", "color": "Bottle Green", "page": 2 },
       { "id": "L13", "number": "13", "color": "Maroon",   "page": 3 },
       { "id": "L14", "number": "14", "color": "White",    "page": 4 },
-      { "id": "L15", "number": "15", "color": "Blue",     "page": 5 },
+      { "id": "L15", "number": "15", "color": "Navy Blue",     "page": 5 },
       { "id": "L16", "number": "16", "color": "Yellow",   "page": 6 },
       { "id": "L17", "number": "17", "color": "Black",    "page": 7 }
     ]
@@ -102,13 +102,13 @@
         "48": { "MRP": 520 }
       },
       "Ladies": {
-        "36_S":     { "MRP": 440 },
-        "38_M":     { "MRP": 440 },
-        "40_L":     { "MRP": 440 },
-        "42_XL":    { "MRP": 440 },
-        "44_XXL":   { "MRP": 440 },
-        "46_XXXL":  { "MRP": 520 },
-        "48_XXXXL": { "MRP": 520 }
+        "S":   { "MRP": 440 },
+        "M":   { "MRP": 440 },
+        "L":   { "MRP": 440 },
+        "XL":  { "MRP": 440 },
+        "XXL": { "MRP": 440 },
+        "3XL": { "MRP": 520 },
+        "4XL": { "MRP": 520 }
       },
       "Kids": {
         "22": { "MRP": 340 },
@@ -119,13 +119,13 @@
       }
     },
     "variants": [
-      { "id": "D18", "number": "18", "color": "Digital Kurta 18", "page": 1 },
-      { "id": "D19", "number": "19", "color": "Digital Kurta 19", "page": 2 },
-      { "id": "D20", "number": "20", "color": "Digital Kurta 20", "page": 3 },
-      { "id": "D21", "number": "21", "color": "Digital Kurta 21", "page": 4 },
-      { "id": "D22", "number": "22", "color": "Digital Kurta 22", "page": 5 },
-      { "id": "D23", "number": "23", "color": "Digital Kurta 23", "page": 6 },
-      { "id": "D24", "number": "24", "color": "Digital Kurta 24", "page": 7 }
+      { "id": "D18", "number": "18", "color": "Digital 18", "page": 1 },
+      { "id": "D19", "number": "19", "color": "Digital 19", "page": 2 },
+      { "id": "D20", "number": "20", "color": "Digital 20", "page": 3 },
+      { "id": "D21", "number": "21", "color": "Digital 21", "page": 4 },
+      { "id": "D22", "number": "22", "color": "Digital 22", "page": 5 },
+      { "id": "D23", "number": "23", "color": "Digital 23", "page": 6 },
+      { "id": "D24", "number": "24", "color": "Digital 24", "page": 7 }
     ]
   }
 ]
