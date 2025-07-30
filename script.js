@@ -25,8 +25,9 @@ function populateDropdowns() {
   colorSelect.innerHTML = '<option value="">Select Color</option>';
 
   // Populate type dropdown
-  const types = products.map(p => p.type);
-  types.forEach(type => {
+  // Ensure types are unique
+  const uniqueTypes = [...new Set(products.map(p => p.type))];
+  uniqueTypes.forEach(type => {
     const opt = document.createElement('option');
     opt.value = type;
     opt.textContent = type;
@@ -36,20 +37,20 @@ function populateDropdowns() {
   // When a type is selected
   typeSelect.addEventListener('change', () => {
     const selectedType = typeSelect.value;
-    const product = products.find(p => p.type === selectedType);
+    // Get all products of the selected type to find all available colors for that type
+    const productsOfType = products.filter(p => p.type === selectedType);
 
     // Reset color dropdown
     colorSelect.innerHTML = '<option value="">Select Color</option>';
 
-    // Populate color dropdown if variants exist
-    if (product && product.variants) {
-      product.variants.forEach(variant => {
-        const opt = document.createElement('option');
-        opt.value = variant.color;
-        opt.textContent = variant.color;
-        colorSelect.appendChild(opt);
-      });
-    }
+    // Populate color dropdown with unique colors for the selected type
+    const uniqueColors = [...new Set(productsOfType.flatMap(p => p.variants ? p.variants.map(v => v.color) : []))];
+    uniqueColors.forEach(color => {
+      const opt = document.createElement('option');
+      opt.value = color;
+      opt.textContent = color;
+      colorSelect.appendChild(opt);
+    });
 
     // Reset pricing, summary, and preview image
     document.getElementById('pricingOutputDiv').innerHTML = '<p>Please select a <strong>Type</strong> and <strong>Color</strong> to see pricing and sizes.</p>';
@@ -70,28 +71,36 @@ function updateImageAndPricing() {
   const img = document.getElementById('previewImage');
   const pricingOutputDiv = document.getElementById('pricingOutputDiv');
 
+  // Find the exact product with the selected type and then its variant with the selected color
   const product = products.find(p => p.type === type);
   const variant = product?.variants.find(v => v.color === color);
 
   if (product && variant) {
-    filteredProduct = { ...product, ...variant };
+    // Combine product and variant details into filteredProduct
+    filteredProduct = {
+      type: product.type,
+      pricing: product.pricing, // Use pricing from the main product
+      ...variant, // Add variant details like color, page, pdf, number
+    };
 
     const imagePath = variant.page
-      ? `Catlogue_icon/${type.toLowerCase()}-page-${variant.page}.jpg`
+      ? `Catlogue_icon/${product.type.toLowerCase().replace(/\s/g, '')}-page-${variant.page}.jpg` // Ensure correct image path based on type and page
       : 'Catlogue_icon/default.png';
 
     img.src = imagePath;
     img.onerror = () => {
       img.src = 'Catlogue_icon/default.png';
+      console.warn(`Image not found: ${imagePath}. Displaying default.`);
     };
 
-    renderProductPricing(product); // Custom function to show size & price
+    renderProductPricing(filteredProduct); // Pass the combined filteredProduct
   } else {
     filteredProduct = null;
     img.src = 'Catlogue_icon/default.png';
     pricingOutputDiv.innerHTML = `
-      <p>Please select both <strong>Type</strong> and <strong>Color</strong> 
+      <p>Please select both <strong>Type</strong> and <strong>Color</strong>
       to see product details and pricing.</p>`;
+    document.getElementById('orderSummaryOutput').innerHTML = ''; // Clear summary if selection is incomplete
   }
 }
 
@@ -103,21 +112,47 @@ function renderProductPricing(product) {
     return;
   }
 
-  let htmlContent = '<h3>Available Sizes & Pricing:</h3>';
+  let htmlContent = `
+    <h3> Available Sizes & Pricing For  <span style="color: Navy;">${product.color}</span> <span style="color: BlueViolet;">${product.type}</span> Kurta:</h3>
+    <div class="tabs">
+      <div class="tab-buttons">
+        <button class="tab-button active" data-tab="mens">Mens</button>
+        <button class="tab-button" data-tab="ladies">Ladies</button>
+        <button class="tab-button" data-tab="kids">Kids</button>
+      </div>
+      <div class="tab-content">
+        <div id="mens-tab" class="tab-pane active"></div>
+        <div id="ladies-tab" class="tab-pane"></div>
+        <div id="kids-tab" class="tab-pane"></div>
+      </div>
+    </div>
+  `;
+  pricingOutputDiv.innerHTML = htmlContent;
+
   const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
 
   categoriesOrder.forEach(category => {
-    if (product.pricing[category]) {
-      htmlContent += `<h4>${category}'s:</h4><div class="category-sizes">`;
+    const tabPane = document.getElementById(`${category.toLowerCase()}-tab`);
+    if (product.pricing[category] && Object.keys(product.pricing[category]).length > 0) {
+      let categoryHtml = `<h4>${category}'s Sizes:</h4><div class="category-sizes">`;
 
       const sizes = product.pricing[category];
 
-      Object.keys(sizes).forEach(sizeKey => {
-        const MRP = sizes[sizeKey].MRP;
-        const discountPercentage = 0.25;
-        const discountPrice = Math.round((MRP - (MRP * discountPercentage))/10)*10;
+      // Sort sizes for consistent display (e.g., S, M, L, XL, XXL)
+      const sortedSizeKeys = Object.keys(sizes).sort((a, b) => {
+        const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', '4XL', '5XL', '6XL']; // Define your order
+        const indexA = sizeOrder.indexOf(a.toUpperCase());
+        const indexB = sizeOrder.indexOf(b.toUpperCase());
+        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        return a.localeCompare(b); // Fallback for other sizes
+      }); 
 
-        htmlContent += `
+      sortedSizeKeys.forEach(sizeKey => {
+        const MRP = sizes[sizeKey].MRP;
+        const discountPercentage = 0.25; // 25% discount
+        const discountPrice = Math.round((MRP - (MRP * discountPercentage)) / 10) * 10; // Round to nearest 10
+
+        categoryHtml += `
           <div class="size-item">
             <label>${sizeKey}:</label>
             <input type="number" min="0" value="0"
@@ -127,17 +162,33 @@ function renderProductPricing(product) {
               data-discount="${discountPrice}"
               class="qty-input"
               placeholder="Qty"/>
-            <span class="mrp-price">MRP: ₹${MRP}</span>
+            <span class="mrp-price"> ₹${MRP}</span>
             <span class="discount-price">Offer: ₹${discountPrice}</span>
           </div>`;
       });
-
-      htmlContent += `</div>`;
+      categoryHtml += `</div>`;
+      tabPane.innerHTML = categoryHtml;
+    } else {
+      tabPane.innerHTML = `<p class="no-sizes-msg">No ${category} sizes available for this product.</p>`;
     }
   });
 
-  pricingOutputDiv.innerHTML = htmlContent;
+  // Add event listeners for tab switching
+  document.querySelectorAll('.tab-button').forEach(button => {
+    button.addEventListener('click', () => {
+      const tabId = button.dataset.tab;
+
+      // Deactivate all buttons and panes
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+
+      // Activate clicked button and corresponding pane
+      button.classList.add('active');
+      document.getElementById(`${tabId}-tab`).classList.add('active');
+    });
+  });
 }
+
 
 function showOrderSummary() {
   const orderSummaryOutput = document.getElementById('orderSummaryOutput');
@@ -147,6 +198,7 @@ function showOrderSummary() {
     return { html: '', whatsapp: 'Please select a product first.' };
   }
 
+  // Select all qty inputs from the pricing section
   const qtyInputs = document.querySelectorAll('#pricingOutputDiv .qty-input');
   const selectedItemsByCategory = {};
   let totalItems = 0;
@@ -181,15 +233,16 @@ function showOrderSummary() {
 
   if (Object.keys(selectedItemsByCategory).length > 0) {
     htmlSummary += `<h3>Order Summary for ${filteredProduct.color} (${filteredProduct.type})</h3>`;
+    // Ensure consistent category order for summary
     const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
 
     categoriesOrder.forEach(category => {
-      if (selectedItemsByCategory[category]) {
-        htmlSummary += `<h4>Category: ${category}</h4><table><thead><tr><th>Size</th><th>Qty</th><th>MRP</th><th>Discount</th><th>Total</th></tr></thead><tbody>`;
-        whatsappTextSummary += `*Category: ${category}*\n- Size - Qty - Price - Total\n`;
+      if (selectedItemsByCategory[category] && selectedItemsByCategory[category].length > 0) {
+        htmlSummary += `<h4>Category: ${category}</h4><table><thead><tr><th>Size</th><th>Qty</th><th>Offer Price</th><th>Total</th></tr></thead><tbody>`;
+        whatsappTextSummary += `*Category: ${category}*\n- Size - Qty - Offer Price - Total\n`;
 
         selectedItemsByCategory[category].forEach(item => {
-          htmlSummary += `<tr><td>${item.size}</td><td>${item.quantity}</td><td>₹${item.mrp}</td><td>₹${item.discountPrice}</td><td>₹${item.lineTotal}</td></tr>`;
+          htmlSummary += `<tr><td>${item.size}</td><td>${item.quantity}</td><td>₹${item.discountPrice}</td><td>₹${item.lineTotal}</td></tr>`;
           whatsappTextSummary += `- ${item.size} - ${item.quantity} - ₹${item.discountPrice} - ₹${item.lineTotal}\n`;
         });
 
@@ -199,7 +252,7 @@ function showOrderSummary() {
     });
 
     htmlSummary += `<p><strong>Total Items:</strong> ${totalItems}</p><p><strong>Overall Total:</strong> ₹${totalPrice.toFixed(2)}</p>`;
-    whatsappTextSummary += `*Total Items:* ${totalItems}\n*Overall Total:* ₹${totalPrice}`;
+    whatsappTextSummary += `*Total Items:* ${totalItems}\n*Overall Total:* ₹${totalPrice.toFixed(2)}`;
   } else {
     htmlSummary = '<p>No items selected for order. Please enter quantities.</p>';
     whatsappTextSummary = 'No items selected for order. Please enter quantities.';
@@ -215,7 +268,7 @@ document.getElementById("orderSummaryButton").addEventListener("click", showOrde
 document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
   const summaries = showOrderSummary();
 
-  if (!filteredProduct) {
+  if (!filteredProduct || summaries.whatsapp === 'No items selected for order. Please enter quantities.') {
     alert("Please select a product (Type and Color) and enter quantities before sending the order.");
     return;
   }
@@ -237,7 +290,7 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
 
   let finalWhatsappMessage = `Hi! I want to place a group order:\n\n`;
   finalWhatsappMessage += `🧥 *Product:* ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number}\n`;
-  finalWhatsappMessage += `📄 *Catalogue:* Page ${filteredProduct.page} | File: ${filteredProduct.pdf}\n\n`;
+  finalWhatsappMessage += `📄 *Catalogue:* Page ${filteredProduct.page} | File: ${filteredProduct.pdf}\n\n`; // Handle missing PDF
   finalWhatsappMessage += summaries.whatsapp;
   finalWhatsappMessage += `\n\n👥 *Group Name:* ${groupName}`;
   finalWhatsappMessage += `\n🏠 *Address:* ${address}`;
