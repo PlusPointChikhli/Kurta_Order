@@ -79,8 +79,9 @@ function updateImageAndPricing() {
     // Combine product and variant details into filteredProduct
     filteredProduct = {
       type: product.type,
+      pdf: product.pdf,
       pricing: product.pricing, // Use pricing from the main product
-      ...variant, // Add variant details like color, page, pdf1, number
+      ...variant, // Add variant details like color, page, number
     };
 
     const imagePath = variant.page
@@ -300,7 +301,7 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
 
   // First line: Product details
   // Use optional chaining `?.` to safely access the pdf property and use 'N/A' if it doesn't exist
-  whatsappMessage += `Product: ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number} | Catalogue: Page ${filteredProduct.page} | File: ${filteredProduct.pdf1 ?? 'N/A'}\n`;
+  whatsappMessage += `Product: ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number} | Catalogue: Page ${filteredProduct.page} | File: ${filteredProduct.pdf ?? 'N/A'}\n`;
 
   // Second line: Itemized list by category
   const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
