@@ -80,7 +80,7 @@ function updateImageAndPricing() {
     filteredProduct = {
       type: product.type,
       pricing: product.pricing, // Use pricing from the main product
-      ...variant, // Add variant details like color, page, pdf, number
+      ...variant, // Add variant details like color, page, pdf1, number
     };
 
     const imagePath = variant.page
