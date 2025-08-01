@@ -1,7 +1,7 @@
 [
   {
     "type": "Plain",
-    "pdf1": "plain.pdf",
+    "pdf": "plain.pdf",
     "pricing": {
       "Mens": {
         "32": { "MRP": 220 },
@@ -46,7 +46,7 @@
   },
   {
     "type": "Lakhnavi",
-    "pdf1": "lakhnavi.pdf",
+    "pdf": "lakhnavi.pdf",
     "pricing": {
       "Mens": {
         "32": { "MRP": 500 },
@@ -88,7 +88,7 @@
   },
   {
     "type": "Digital",
-    "pdf1": "printat.pdf",
+    "pdf": "printat.pdf",
     "pricing": {
       "Mens": {
         "32": { "MRP": 440 },
