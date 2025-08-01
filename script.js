@@ -195,7 +195,13 @@ function showOrderSummary() {
 
   if (!filteredProduct) {
     orderSummaryOutput.innerHTML = '<p class="error-message">Please select a product (Type and Color) first.</p>';
-    return { html: '', whatsapp: 'Please select a product first.' };
+    // Return a structured object indicating an error
+    return {
+      html: '',
+      selectedItems: null,
+      totalItems: 0,
+      totalPrice: 0
+    };
   }
 
   // Select all qty inputs from the pricing section
@@ -229,7 +235,6 @@ function showOrderSummary() {
   });
 
   let htmlSummary = '';
-  let whatsappTextSummary = '';
 
   if (Object.keys(selectedItemsByCategory).length > 0) {
     htmlSummary += `<h3>Order Summary for ${filteredProduct.color} (${filteredProduct.type})</h3>`;
@@ -239,28 +244,29 @@ function showOrderSummary() {
     categoriesOrder.forEach(category => {
       if (selectedItemsByCategory[category] && selectedItemsByCategory[category].length > 0) {
         htmlSummary += `<h4>Category: ${category}</h4><table><thead><tr><th>Size</th><th>Qty</th><th>Offer Price</th><th>Total</th></tr></thead><tbody>`;
-        whatsappTextSummary += `*Category: ${category}*\n- Size - Qty - Offer Price - Total\n`;
 
         selectedItemsByCategory[category].forEach(item => {
           htmlSummary += `<tr><td>${item.size}</td><td>${item.quantity}</td><td>₹${item.discountPrice}</td><td>₹${item.lineTotal}</td></tr>`;
-          whatsappTextSummary += `- ${item.size} - ${item.quantity} - ₹${item.discountPrice} - ₹${item.lineTotal}\n`;
         });
 
         htmlSummary += `</tbody></table>`;
-        whatsappTextSummary += `\n`;
       }
     });
 
     htmlSummary += `<p><strong>Total Items:</strong> ${totalItems}</p><p><strong>Overall Total:</strong> ₹${totalPrice.toFixed(2)}</p>`;
-    whatsappTextSummary += `*Total Items:* ${totalItems}\n*Overall Total:* ₹${totalPrice.toFixed(2)}`;
   } else {
     htmlSummary = '<p>No items selected for order. Please enter quantities.</p>';
-    whatsappTextSummary = 'No items selected for order. Please enter quantities.';
   }
 
   orderSummaryOutput.innerHTML = htmlSummary;
 
-  return { html: htmlSummary, whatsapp: whatsappTextSummary };
+  // Return a single object with all the necessary data
+  return {
+    html: htmlSummary,
+    selectedItems: selectedItemsByCategory,
+    totalItems,
+    totalPrice: totalPrice.toFixed(2)
+  };
 }
 
 document.getElementById("orderSummaryButton").addEventListener("click", showOrderSummary);
@@ -268,7 +274,8 @@ document.getElementById("orderSummaryButton").addEventListener("click", showOrde
 document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
   const summaries = showOrderSummary();
 
-  if (!filteredProduct || summaries.whatsapp === 'No items selected for order. Please enter quantities.') {
+  // Handle case where no product is selected or no items are added
+  if (!filteredProduct || !summaries.selectedItems || Object.keys(summaries.selectedItems).length === 0) {
     alert("Please select a product (Type and Color) and enter quantities before sending the order.");
     return;
   }
@@ -288,16 +295,30 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
     return;
   }
 
-  let finalWhatsappMessage = `Hi! I want to place a group order:\n\n`;
-  finalWhatsappMessage += `🧥 *Product:* ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number}\n`;
-  finalWhatsappMessage += `📄 *Catalogue:* Page ${filteredProduct.page} | File: ${filteredProduct.pdf}\n\n`; // Handle missing PDF
-  finalWhatsappMessage += summaries.whatsapp;
-  finalWhatsappMessage += `\n\n👥 *Group Name:* ${groupName}`;
-  finalWhatsappMessage += `\n🏠 *Address:* ${address}`;
-  finalWhatsappMessage += `\n📞 *Contact:* ${contact}`;
-  finalWhatsappMessage += `\n🗓️ *Date:* ${new Date().toLocaleDateString("en-IN")}`;
+  // Build the WhatsApp message based on the desired format
+  let whatsappMessage = `Hi! I want to place a group order: `;
 
+  // First line: Product details
+  // Use optional chaining `?.` to safely access the pdf property and use 'N/A' if it doesn't exist
+  whatsappMessage += `Product: ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number} | Catalogue: Page ${filteredProduct.page} | File: ${filteredProduct.pdf ?? 'N/A'}\n`;
 
-  const whatsappURL = `https://wa.me/918866244409?text=${encodeURIComponent(finalWhatsappMessage)}`;
+  // Second line: Itemized list by category
+  const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
+  let itemsSummary = [];
+  categoriesOrder.forEach(category => {
+    if (summaries.selectedItems[category]) {
+      const sizeItems = summaries.selectedItems[category].map(item => `${item.size}-${item.quantity}`).join(', ');
+      itemsSummary.push(`${category}: ${sizeItems}`);
+    }
+  });
+  whatsappMessage += itemsSummary.join(' | ');
+
+  // Third line: Totals
+  whatsappMessage += ` | Total Items: ${summaries.totalItems} | Overall Total: ₹${summaries.totalPrice} | `;
+
+  // Fourth line onwards: Customer details
+  whatsappMessage += `Group Name: ${groupName} | Address: ${address} | Contact: ${contact} | Date: ${new Date().toLocaleDateString("en-IN")}`;
+
+  const whatsappURL = `https://wa.me/919722609460?text=${encodeURIComponent(whatsappMessage)}`;
   window.open(whatsappURL, "_blank");
 });
