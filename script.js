@@ -300,7 +300,7 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
 
   // First line: Product details
   // Use optional chaining `?.` to safely access the pdf property and use 'N/A' if it doesn't exist
-  whatsappMessage += `🧥 *Product:* ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number}\n 📄 *Catalogue:* Page ${filteredProduct.page}| File: ${filteredProduct.pdf ?? 'N/A'} \n\n`;
+  whatsappMessage += `*Product:* ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number}\n 📄 *Catalogue:* Page ${filteredProduct.page} | File: ${filteredProduct.pdf ?? 'N/A'} \n\n`;
 
   // Second line: Itemized list by category
   const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
