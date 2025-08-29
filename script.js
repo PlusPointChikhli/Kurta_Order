@@ -1,4 +1,3 @@
-<script>
 let products = [];
 let filteredProduct = null;
 
@@ -21,9 +20,12 @@ function populateDropdowns() {
   const typeSelect = document.getElementById('typeSelect');
   const colorSelect = document.getElementById('colorSelect');
 
+  // Reset both dropdowns initially
   typeSelect.innerHTML = '<option value="">Select Type</option>';
   colorSelect.innerHTML = '<option value="">Select Color</option>';
 
+  // Populate type dropdown
+  // Ensure types are unique
   const uniqueTypes = [...new Set(products.map(p => p.type))];
   uniqueTypes.forEach(type => {
     const opt = document.createElement('option');
@@ -32,12 +34,16 @@ function populateDropdowns() {
     typeSelect.appendChild(opt);
   });
 
+  // When a type is selected
   typeSelect.addEventListener('change', () => {
     const selectedType = typeSelect.value;
+    // Get all products of the selected type to find all available colors for that type
     const productsOfType = products.filter(p => p.type === selectedType);
 
+    // Reset color dropdown
     colorSelect.innerHTML = '<option value="">Select Color</option>';
 
+    // Populate color dropdown with unique colors for the selected type
     const uniqueColors = [...new Set(productsOfType.flatMap(p => p.variants ? p.variants.map(v => v.color) : []))];
     uniqueColors.forEach(color => {
       const opt = document.createElement('option');
@@ -46,12 +52,14 @@ function populateDropdowns() {
       colorSelect.appendChild(opt);
     });
 
+    // Reset pricing, summary, and preview image
     document.getElementById('pricingOutputDiv').innerHTML = '<p>Please select a <strong>Type</strong> and <strong>Color</strong> to see pricing and sizes.</p>';
     document.getElementById('orderSummaryOutput').innerHTML = '';
     filteredProduct = null;
-    updateImageAndPricing();
+    updateImageAndPricing(); // reset image
   });
 
+  // When a color is selected
   colorSelect.addEventListener('change', () => {
     updateImageAndPricing();
   });
@@ -63,19 +71,21 @@ function updateImageAndPricing() {
   const img = document.getElementById('previewImage');
   const pricingOutputDiv = document.getElementById('pricingOutputDiv');
 
+  // Find the exact product with the selected type and then its variant with the selected color
   const product = products.find(p => p.type === type);
   const variant = product?.variants.find(v => v.color === color);
 
   if (product && variant) {
+    // Combine product and variant details into filteredProduct
     filteredProduct = {
       type: product.type,
       pdf: product.pdf,
-      pricing: product.pricing,
-      ...variant,
+      pricing: product.pricing, // Use pricing from the main product
+      ...variant, // Add variant details like color, page, number
     };
 
     const imagePath = variant.page
-      ? `Catlogue_icon/${product.type.toLowerCase().replace(/\s/g, '')}-page-${variant.page}.jpg`
+      ? `Catlogue_icon/${product.type.toLowerCase().replace(/\s/g, '')}-page-${variant.page}.jpg` // Ensure correct image path based on type and page
       : 'Catlogue_icon/default.png';
 
     img.src = imagePath;
@@ -84,14 +94,14 @@ function updateImageAndPricing() {
       console.warn(`Image not found: ${imagePath}. Displaying default.`);
     };
 
-    renderProductPricing(filteredProduct);
+    renderProductPricing(filteredProduct); // Pass the combined filteredProduct
   } else {
     filteredProduct = null;
     img.src = 'Catlogue_icon/default.png';
     pricingOutputDiv.innerHTML = `
       <p>Please select both <strong>Type</strong> and <strong>Color</strong>
       to see product details and pricing.</p>`;
-    document.getElementById('orderSummaryOutput').innerHTML = '';
+    document.getElementById('orderSummaryOutput').innerHTML = ''; // Clear summary if selection is incomplete
   }
 }
 
@@ -128,18 +138,20 @@ function renderProductPricing(product) {
       let categoryHtml = `<h4>${category}'s Sizes:</h4><div class="category-sizes">`;
 
       const sizes = product.pricing[category];
+
+      // Sort sizes for consistent display (e.g., S, M, L, XL, XXL)
       const sortedSizeKeys = Object.keys(sizes).sort((a, b) => {
-        const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', '4XL', '5XL', '6XL'];
+        const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', '4XL', '5XL', '6XL']; // Define your order
         const indexA = sizeOrder.indexOf(a.toUpperCase());
         const indexB = sizeOrder.indexOf(b.toUpperCase());
         if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-        return a.localeCompare(b);
+        return a.localeCompare(b); // Fallback for other sizes
       }); 
 
       sortedSizeKeys.forEach(sizeKey => {
         const MRP = sizes[sizeKey].MRP;
-        const discountPercentage = 0.25;
-        const discountPrice = Math.round((MRP - (MRP * discountPercentage)) / 10) * 10;
+        const discountPercentage = 0.25; // 25% discount
+        const discountPrice = Math.round((MRP - (MRP * discountPercentage)) / 10) * 10; // Round to nearest 10
 
         categoryHtml += `
           <div class="size-item">
@@ -162,32 +174,32 @@ function renderProductPricing(product) {
     }
   });
 
+  // Add event listeners for tab switching
   document.querySelectorAll('.tab-button').forEach(button => {
     button.addEventListener('click', () => {
       const tabId = button.dataset.tab;
 
+      // Deactivate all buttons and panes
       document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
 
+      // Activate clicked button and corresponding pane
       button.classList.add('active');
       document.getElementById(`${tabId}-tab`).classList.add('active');
     });
   });
 }
 
+
 function showOrderSummary() {
   const orderSummaryOutput = document.getElementById('orderSummaryOutput');
 
   if (!filteredProduct) {
     orderSummaryOutput.innerHTML = '<p class="error-message">Please select a product (Type and Color) first.</p>';
-    return {
-      html: '',
-      selectedItems: null,
-      totalItems: 0,
-      totalPrice: 0
-    };
+    return { html: '', whatsapp: 'Please select a product first.' };
   }
 
+  // Select all qty inputs from the pricing section
   const qtyInputs = document.querySelectorAll('#pricingOutputDiv .qty-input');
   const selectedItemsByCategory = {};
   let totalItems = 0;
@@ -218,36 +230,38 @@ function showOrderSummary() {
   });
 
   let htmlSummary = '';
+  let whatsappTextSummary = '';
 
   if (Object.keys(selectedItemsByCategory).length > 0) {
     htmlSummary += `<h3>Order Summary for ${filteredProduct.color} (${filteredProduct.type})</h3>`;
+    // Ensure consistent category order for summary
     const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
 
     categoriesOrder.forEach(category => {
       if (selectedItemsByCategory[category] && selectedItemsByCategory[category].length > 0) {
         htmlSummary += `<h4>Category: ${category}</h4><table><thead><tr><th>Size</th><th>Qty</th><th>Offer Price</th><th>Total</th></tr></thead><tbody>`;
+        whatsappTextSummary += `*Category: ${category}*\n- Size - Qty - Offer Price - Total\n`;
 
         selectedItemsByCategory[category].forEach(item => {
           htmlSummary += `<tr><td>${item.size}</td><td>${item.quantity}</td><td>₹${item.discountPrice}</td><td>₹${item.lineTotal}</td></tr>`;
+          whatsappTextSummary += `- ${item.size} - ${item.quantity} - ₹${item.discountPrice} - ₹${item.lineTotal}\n`;
         });
 
         htmlSummary += `</tbody></table>`;
+        whatsappTextSummary += `\n`;
       }
     });
 
     htmlSummary += `<p><strong>Total Items:</strong> ${totalItems}</p><p><strong>Overall Total:</strong> ₹${totalPrice.toFixed(2)}</p>`;
+    whatsappTextSummary += `*Total Items:* ${totalItems}\n*Overall Total:* ₹${totalPrice.toFixed(2)}`;
   } else {
     htmlSummary = '<p>No items selected for order. Please enter quantities.</p>';
+    whatsappTextSummary = 'No items selected for order. Please enter quantities.';
   }
 
   orderSummaryOutput.innerHTML = htmlSummary;
 
-  return {
-    html: htmlSummary,
-    selectedItems: selectedItemsByCategory,
-    totalItems,
-    totalPrice: totalPrice.toFixed(2)
-  };
+  return { html: htmlSummary, whatsapp: whatsappTextSummary };
 }
 
 document.getElementById("orderSummaryButton").addEventListener("click", showOrderSummary);
@@ -255,7 +269,7 @@ document.getElementById("orderSummaryButton").addEventListener("click", showOrde
 document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
   const summaries = showOrderSummary();
 
-  if (!filteredProduct || !summaries.selectedItems || Object.keys(summaries.selectedItems).length === 0) {
+  if (!filteredProduct || summaries.whatsapp === 'No items selected for order. Please enter quantities.') {
     alert("Please select a product (Type and Color) and enter quantities before sending the order.");
     return;
   }
@@ -275,38 +289,16 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
     return;
   }
 
-  const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
+  let finalWhatsappMessage = `Hi! I want to place a group order:\n\n`;
+  finalWhatsappMessage += `🧥 *Product:* ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number}\n`;
+  finalWhatsappMessage += `📄 *Catalogue:* Page ${filteredProduct.page} | File: ${filteredProduct.pdf}\n\n`; // Handle missing PDF
+  finalWhatsappMessage += summaries.whatsapp;
+  finalWhatsappMessage += `\n\n👥 *Group Name:* ${groupName}`;
+  finalWhatsappMessage += `\n🏠 *Address:* ${address}`;
+  finalWhatsappMessage += `\n📞 *Contact:* ${contact}`;
+  finalWhatsappMessage += `\n🗓️ *Date:* ${new Date().toLocaleDateString("en-IN")}`;
 
-  // 🟢 UPGRADED FORMATTED MESSAGE
-  let whatsappMessage = `✨ *Group Order Request* ✨\n\n`;
 
-  whatsappMessage += `🏬 *Shop:* PlusPoint – Chikhli\n\n`;
-
-  whatsappMessage += `📌 *Product Details*\n`;
-  whatsappMessage += `• Product: ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number}\n`;
-  whatsappMessage += `• Catalogue: Page ${filteredProduct.page}\n`;
-  whatsappMessage += `• File: ${filteredProduct.pdf ?? 'N/A'}\n\n`;
-
-  whatsappMessage += `👕 *Order Quantities*\n`;
-  categoriesOrder.forEach(category => {
-    if (summaries.selectedItems[category]) {
-      const sizeItems = summaries.selectedItems[category]
-        .map(item => `${item.size}-${item.quantity}`)
-        .join(', ');
-      whatsappMessage += `• ${category}: ${sizeItems}\n`;
-    }
-  });
-
-  whatsappMessage += `\n📦 *Total Items:* ${summaries.totalItems}\n💰 *Overall Total:* ₹${summaries.totalPrice}\n\n`;
-
-  whatsappMessage += `👥 *Group Name:* ${groupName}\n`;
-  whatsappMessage += `🏠 *Address:* ${address}\n`;
-  whatsappMessage += `📞 *Contact:* ${contact}\n`;
-  whatsappMessage += `📅 *Date:* ${new Date().toLocaleDateString("en-IN")}\n\n`;
-
-  whatsappMessage += `🙏 Thank you for your order with *PlusPoint – Chikhli*!`;
-
-  const whatsappURL = `https://wa.me/918866244409?text=${encodeURIComponent(whatsappMessage)}`;
+  const whatsappURL = `https://wa.me/918866244409?text=${encodeURIComponent(finalWhatsappMessage)}`;
   window.open(whatsappURL, "_blank");
 });
-</script>
