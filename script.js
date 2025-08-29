@@ -1,3 +1,4 @@
+<script>
 let products = [];
 let filteredProduct = null;
 
@@ -20,12 +21,9 @@ function populateDropdowns() {
   const typeSelect = document.getElementById('typeSelect');
   const colorSelect = document.getElementById('colorSelect');
 
-  // Reset both dropdowns initially
   typeSelect.innerHTML = '<option value="">Select Type</option>';
   colorSelect.innerHTML = '<option value="">Select Color</option>';
 
-  // Populate type dropdown
-  // Ensure types are unique
   const uniqueTypes = [...new Set(products.map(p => p.type))];
   uniqueTypes.forEach(type => {
     const opt = document.createElement('option');
@@ -34,16 +32,12 @@ function populateDropdowns() {
     typeSelect.appendChild(opt);
   });
 
-  // When a type is selected
   typeSelect.addEventListener('change', () => {
     const selectedType = typeSelect.value;
-    // Get all products of the selected type to find all available colors for that type
     const productsOfType = products.filter(p => p.type === selectedType);
 
-    // Reset color dropdown
     colorSelect.innerHTML = '<option value="">Select Color</option>';
 
-    // Populate color dropdown with unique colors for the selected type
     const uniqueColors = [...new Set(productsOfType.flatMap(p => p.variants ? p.variants.map(v => v.color) : []))];
     uniqueColors.forEach(color => {
       const opt = document.createElement('option');
@@ -52,14 +46,12 @@ function populateDropdowns() {
       colorSelect.appendChild(opt);
     });
 
-    // Reset pricing, summary, and preview image
     document.getElementById('pricingOutputDiv').innerHTML = '<p>Please select a <strong>Type</strong> and <strong>Color</strong> to see pricing and sizes.</p>';
     document.getElementById('orderSummaryOutput').innerHTML = '';
     filteredProduct = null;
-    updateImageAndPricing(); // reset image
+    updateImageAndPricing();
   });
 
-  // When a color is selected
   colorSelect.addEventListener('change', () => {
     updateImageAndPricing();
   });
@@ -71,21 +63,19 @@ function updateImageAndPricing() {
   const img = document.getElementById('previewImage');
   const pricingOutputDiv = document.getElementById('pricingOutputDiv');
 
-  // Find the exact product with the selected type and then its variant with the selected color
   const product = products.find(p => p.type === type);
   const variant = product?.variants.find(v => v.color === color);
 
   if (product && variant) {
-    // Combine product and variant details into filteredProduct
     filteredProduct = {
       type: product.type,
       pdf: product.pdf,
-      pricing: product.pricing, // Use pricing from the main product
-      ...variant, // Add variant details like color, page, number
+      pricing: product.pricing,
+      ...variant,
     };
 
     const imagePath = variant.page
-      ? `Catlogue_icon/${product.type.toLowerCase().replace(/\s/g, '')}-page-${variant.page}.jpg` // Ensure correct image path based on type and page
+      ? `Catlogue_icon/${product.type.toLowerCase().replace(/\s/g, '')}-page-${variant.page}.jpg`
       : 'Catlogue_icon/default.png';
 
     img.src = imagePath;
@@ -94,14 +84,14 @@ function updateImageAndPricing() {
       console.warn(`Image not found: ${imagePath}. Displaying default.`);
     };
 
-    renderProductPricing(filteredProduct); // Pass the combined filteredProduct
+    renderProductPricing(filteredProduct);
   } else {
     filteredProduct = null;
     img.src = 'Catlogue_icon/default.png';
     pricingOutputDiv.innerHTML = `
       <p>Please select both <strong>Type</strong> and <strong>Color</strong>
       to see product details and pricing.</p>`;
-    document.getElementById('orderSummaryOutput').innerHTML = ''; // Clear summary if selection is incomplete
+    document.getElementById('orderSummaryOutput').innerHTML = '';
   }
 }
 
@@ -138,20 +128,18 @@ function renderProductPricing(product) {
       let categoryHtml = `<h4>${category}'s Sizes:</h4><div class="category-sizes">`;
 
       const sizes = product.pricing[category];
-
-      // Sort sizes for consistent display (e.g., S, M, L, XL, XXL)
       const sortedSizeKeys = Object.keys(sizes).sort((a, b) => {
-        const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', '4XL', '5XL', '6XL']; // Define your order
+        const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', '4XL', '5XL', '6XL'];
         const indexA = sizeOrder.indexOf(a.toUpperCase());
         const indexB = sizeOrder.indexOf(b.toUpperCase());
         if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-        return a.localeCompare(b); // Fallback for other sizes
+        return a.localeCompare(b);
       }); 
 
       sortedSizeKeys.forEach(sizeKey => {
         const MRP = sizes[sizeKey].MRP;
-        const discountPercentage = 0.25; // 25% discount
-        const discountPrice = Math.round((MRP - (MRP * discountPercentage)) / 10) * 10; // Round to nearest 10
+        const discountPercentage = 0.25;
+        const discountPrice = Math.round((MRP - (MRP * discountPercentage)) / 10) * 10;
 
         categoryHtml += `
           <div class="size-item">
@@ -174,29 +162,24 @@ function renderProductPricing(product) {
     }
   });
 
-  // Add event listeners for tab switching
   document.querySelectorAll('.tab-button').forEach(button => {
     button.addEventListener('click', () => {
       const tabId = button.dataset.tab;
 
-      // Deactivate all buttons and panes
       document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
 
-      // Activate clicked button and corresponding pane
       button.classList.add('active');
       document.getElementById(`${tabId}-tab`).classList.add('active');
     });
   });
 }
 
-
 function showOrderSummary() {
   const orderSummaryOutput = document.getElementById('orderSummaryOutput');
 
   if (!filteredProduct) {
     orderSummaryOutput.innerHTML = '<p class="error-message">Please select a product (Type and Color) first.</p>';
-    // Return a structured object indicating an error
     return {
       html: '',
       selectedItems: null,
@@ -205,7 +188,6 @@ function showOrderSummary() {
     };
   }
 
-  // Select all qty inputs from the pricing section
   const qtyInputs = document.querySelectorAll('#pricingOutputDiv .qty-input');
   const selectedItemsByCategory = {};
   let totalItems = 0;
@@ -239,7 +221,6 @@ function showOrderSummary() {
 
   if (Object.keys(selectedItemsByCategory).length > 0) {
     htmlSummary += `<h3>Order Summary for ${filteredProduct.color} (${filteredProduct.type})</h3>`;
-    // Ensure consistent category order for summary
     const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
 
     categoriesOrder.forEach(category => {
@@ -261,7 +242,6 @@ function showOrderSummary() {
 
   orderSummaryOutput.innerHTML = htmlSummary;
 
-  // Return a single object with all the necessary data
   return {
     html: htmlSummary,
     selectedItems: selectedItemsByCategory,
@@ -275,7 +255,6 @@ document.getElementById("orderSummaryButton").addEventListener("click", showOrde
 document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
   const summaries = showOrderSummary();
 
-  // Handle case where no product is selected or no items are added
   if (!filteredProduct || !summaries.selectedItems || Object.keys(summaries.selectedItems).length === 0) {
     alert("Please select a product (Type and Color) and enter quantities before sending the order.");
     return;
@@ -296,30 +275,38 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
     return;
   }
 
-  // Build the WhatsApp message based on the desired format
-  let whatsappMessage = `Hi! I want to place a group order: `;
-
-  // First line: Product details
-  // Use optional chaining `?.` to safely access the pdf property and use 'N/A' if it doesn't exist
-  whatsappMessage += `Product: ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number} | Catalogue: Page ${filteredProduct.page} | File: ${filteredProduct.pdf ?? 'N/A'} | `;
-
-  // Second line: Itemized list by category
   const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
-  let itemsSummary = [];
+
+  // 🟢 UPGRADED FORMATTED MESSAGE
+  let whatsappMessage = `✨ *Group Order Request* ✨\n\n`;
+
+  whatsappMessage += `🏬 *Shop:* PlusPoint – Chikhli\n\n`;
+
+  whatsappMessage += `📌 *Product Details*\n`;
+  whatsappMessage += `• Product: ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number}\n`;
+  whatsappMessage += `• Catalogue: Page ${filteredProduct.page}\n`;
+  whatsappMessage += `• File: ${filteredProduct.pdf ?? 'N/A'}\n\n`;
+
+  whatsappMessage += `👕 *Order Quantities*\n`;
   categoriesOrder.forEach(category => {
     if (summaries.selectedItems[category]) {
-      const sizeItems = summaries.selectedItems[category].map(item => `${item.size}-${item.quantity}`).join(', ');
-      itemsSummary.push(`${category}: ${sizeItems}`);
+      const sizeItems = summaries.selectedItems[category]
+        .map(item => `${item.size}-${item.quantity}`)
+        .join(', ');
+      whatsappMessage += `• ${category}: ${sizeItems}\n`;
     }
   });
-  whatsappMessage += itemsSummary.join(' | ');
 
-  // Third line: Totals
-  whatsappMessage += ` | Total Items: ${summaries.totalItems} | Overall Total: ₹${summaries.totalPrice} | `;
+  whatsappMessage += `\n📦 *Total Items:* ${summaries.totalItems}\n💰 *Overall Total:* ₹${summaries.totalPrice}\n\n`;
 
-  // Fourth line onwards: Customer details
-  whatsappMessage += `Group Name: ${groupName} | Address: ${address} | Contact: ${contact} | Date: ${new Date().toLocaleDateString("en-IN")}`;
+  whatsappMessage += `👥 *Group Name:* ${groupName}\n`;
+  whatsappMessage += `🏠 *Address:* ${address}\n`;
+  whatsappMessage += `📞 *Contact:* ${contact}\n`;
+  whatsappMessage += `📅 *Date:* ${new Date().toLocaleDateString("en-IN")}\n\n`;
 
-  const whatsappURL = `https://wa.me/919722609460?text=${encodeURIComponent(whatsappMessage)}`;
+  whatsappMessage += `🙏 Thank you for your order with *PlusPoint – Chikhli*!`;
+
+  const whatsappURL = `https://wa.me/918866244409?text=${encodeURIComponent(whatsappMessage)}`;
   window.open(whatsappURL, "_blank");
 });
+</script>
