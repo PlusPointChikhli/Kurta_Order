@@ -300,25 +300,25 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
 
   // First line: Product details
   // Use optional chaining `?.` to safely access the pdf property and use 'N/A' if it doesn't exist
-  whatsappMessage += `🧥 *Product:* ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number}\n| 📄 *Catalogue:* Page ${filteredProduct.page}\n| File: ${filteredProduct.pdf ?? 'N/A'} |\n\n`;
+  whatsappMessage += `🧥 *Product:* ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number}\n 📄 *Catalogue:* Page ${filteredProduct.page}| File: ${filteredProduct.pdf ?? 'N/A'} \n\n`;
 
   // Second line: Itemized list by category
   const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
   let itemsSummary = [];
   categoriesOrder.forEach(category => {
     if (summaries.selectedItems[category]) {
-      const sizeItems = summaries.selectedItems[category].map(item => `${item.size}-${item.quantity}`).join(', ');
+      const sizeItems = summaries.selectedItems[category].map(item => `${item.size}-${item.quantity}`).join(' , ');
       itemsSummary.push(`${category}: ${sizeItems}`);
     }
   });
-  whatsappMessage += itemsSummary.join(' \n| ');
+  whatsappMessage += itemsSummary.join(' \n ');
 
   // Third line: Totals
-  whatsappMessage += ` \n| *Total Items:* ${summaries.totalItems} \n| *Overall Total:* ₹${summaries.totalPrice} | `;
+  whatsappMessage += ` \n *Total Items:* ${summaries.totalItems} \n *Overall Total: ₹${summaries.totalPrice}* `;
 
   // Fourth line onwards: Customer details
-  whatsappMessage += `\n|👥 *Group Name:* ${groupName} \n|🏠 *Address:* ${address} \n|📞 *Contact:* ${contact} \n| 🗓️ *Date: ${new Date().toLocaleDateString("en-IN")}`;
+  whatsappMessage += `\n\n👥 *Group Name:* ${groupName} \n🏠 *Address:* ${address} \n📞 *Contact:* ${contact} \n 🗓️ *Date: ${new Date().toLocaleDateString("en-IN")}`;
 
-  const whatsappURL = `https://wa.me/918866244409?text=${encodeURIComponent(whatsappMessage)}`;
+  const whatsappURL = `https://wa.me/919722609460?text=${encodeURIComponent(whatsappMessage)}`;
   window.open(whatsappURL, "_blank");
 });
