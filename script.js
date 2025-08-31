@@ -150,7 +150,7 @@ function renderProductPricing(product) {
 
       sortedSizeKeys.forEach(sizeKey => {
         const MRP = sizes[sizeKey].MRP;
-        const discountPercentage = 0.25; // 25% discount
+        const discountPercentage = 0.3; // 30% discount
         const discountPrice = Math.round((MRP - (MRP * discountPercentage)) / 10) * 10; // Round to nearest 10
 
         categoryHtml += `
