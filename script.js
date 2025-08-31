@@ -113,6 +113,8 @@ function renderProductPricing(product) {
     return;
   }
 
+  const isPlainKurta = product.type === "Plain";
+
   let htmlContent = `
     <h3> Available Sizes & Pricing For  <span style="color: Navy;">${product.color}</span> <span style="color: BlueViolet;">${product.type}</span> Kurta:</h3>
     <div class="tabs">
@@ -146,15 +148,16 @@ function renderProductPricing(product) {
         const indexB = sizeOrder.indexOf(b.toUpperCase());
         if (indexA !== -1 && indexB !== -1) return indexA - indexB;
         return a.localeCompare(b); // Fallback for other sizes
-      }); 
+      });
 
       sortedSizeKeys.forEach(sizeKey => {
         const MRP = sizes[sizeKey].MRP;
         const discountPercentage = 0.25; // 25% discount
         const discountPrice = Math.round((MRP - (MRP * discountPercentage)) / 10) * 10; // Round to nearest 10
 
+        // Conditionally render based on whether it's a Plain Kurta
         categoryHtml += `
-          <div class="size-item">
+          <div class="size-item ${isPlainKurta ? 'plain-kurta-item' : ''}">
             <label>${sizeKey}:</label>
             <input type="number" min="0" value="0"
               data-category="${category}"
@@ -163,6 +166,8 @@ function renderProductPricing(product) {
               data-discount="${discountPrice}"
               class="qty-input"
               placeholder="Qty"/>
+            ${!isPlainKurta ? `<span class="mrp-price"> ₹${MRP}</span>` : ''}
+            ${!isPlainKurta ? `<span class="discount-price">Offer: ₹${discountPrice}</span>` : ''}
           </div>`;
       });
       categoryHtml += `</div>`;
@@ -188,7 +193,6 @@ function renderProductPricing(product) {
   });
 }
 
-
 function showOrderSummary() {
   const orderSummaryOutput = document.getElementById('orderSummaryOutput');
 
@@ -202,6 +206,8 @@ function showOrderSummary() {
       totalPrice: 0
     };
   }
+  
+  const isPlainKurta = filteredProduct.type === "Plain";
 
   // Select all qty inputs from the pricing section
   const qtyInputs = document.querySelectorAll('#pricingOutputDiv .qty-input');
@@ -222,7 +228,7 @@ function showOrderSummary() {
         quantity,
         mrp,
         discountPrice,
-        lineTotal: quantity * discountPrice
+        lineTotal: isPlainKurta ? quantity : quantity * discountPrice
       };
 
       if (!selectedItemsByCategory[category]) selectedItemsByCategory[category] = [];
@@ -242,17 +248,28 @@ function showOrderSummary() {
 
     categoriesOrder.forEach(category => {
       if (selectedItemsByCategory[category] && selectedItemsByCategory[category].length > 0) {
-        htmlSummary += `<h4>Category: ${category}</h4><table><thead><tr><th>Size</th><th>Qty</th><th>Offer Price</th><th>Total</th></tr></thead><tbody>`;
+        if (!isPlainKurta) {
+          htmlSummary += `<h4>Category: ${category}</h4><table><thead><tr><th>Size</th><th>Qty</th><th>Offer Price</th><th>Total</th></tr></thead><tbody>`;
+        } else {
+          htmlSummary += `<h4>Category: ${category}</h4><table><thead><tr><th>Size</th><th>Qty</th></tr></thead><tbody>`;
+        }
 
         selectedItemsByCategory[category].forEach(item => {
-          htmlSummary += `<tr><td>${item.size}</td><td>${item.quantity}</td><td>₹${item.discountPrice}</td><td>₹${item.lineTotal}</td></tr>`;
+          if (!isPlainKurta) {
+            htmlSummary += `<tr><td>${item.size}</td><td>${item.quantity}</td><td>₹${item.discountPrice}</td><td>₹${item.lineTotal}</td></tr>`;
+          } else {
+            htmlSummary += `<tr><td>${item.size}</td><td>${item.quantity}</td></tr>`;
+          }
         });
 
         htmlSummary += `</tbody></table>`;
       }
     });
 
-    htmlSummary += `<p><strong>Total Items:</strong> ${totalItems}</p><p><strong>Overall Total:</strong> ₹${totalPrice.toFixed(2)}</p>`;
+    htmlSummary += `<p><strong>Total Items:</strong> ${totalItems}</p>`;
+    if (!isPlainKurta) {
+        htmlSummary += `<p><strong>Overall Total:</strong> ₹${totalPrice.toFixed(2)}</p>`;
+    }
   } else {
     htmlSummary = '<p>No items selected for order. Please enter quantities.</p>';
   }
@@ -264,7 +281,7 @@ function showOrderSummary() {
     html: htmlSummary,
     selectedItems: selectedItemsByCategory,
     totalItems,
-    totalPrice: totalPrice.toFixed(2)
+    totalPrice: isPlainKurta ? 'N/A' : totalPrice.toFixed(2)
   };
 }
 
@@ -293,6 +310,9 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
     alert("Please enter a valid 10-digit contact number.");
     return;
   }
+  
+  const isPlainKurta = filteredProduct.type === "Plain";
+  
   // Build the WhatsApp message based on the desired format
   let whatsappMessage = `Hi! I want to place a group order:\n\n`;
 
@@ -312,11 +332,105 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
   whatsappMessage += itemsSummary.join(' \n ');
 
   // Third line: Totals
-  whatsappMessage += ` \n *Total Items:* ${summaries.totalItems} \n\n *Overall Total: ₹${summaries.totalPrice}* `;
+  whatsappMessage += ` \n *Total Items:* ${summaries.totalItems} \n\n`;
+  if (!isPlainKurta) {
+    whatsappMessage += `*Overall Total: ₹${summaries.totalPrice}* `;
+  }
 
   // Fourth line onwards: Customer details
   whatsappMessage += `\n\n👥 *Group Name:* ${groupName} \n🏠 *Address:* ${address} \n📞 *Contact:* ${contact} \n🗓️ *Date: ${new Date().toLocaleDateString("en-IN")}`;
 
   const whatsappURL = `https://wa.me/919722609460?text=${encodeURIComponent(whatsappMessage)}`;
   window.open(whatsappURL, "_blank");
+});
+
+document.getElementById("downloadPdfButton").addEventListener("click", () => {
+    const { jsPDF } = window.jspdf;
+    const summaries = showOrderSummary();
+
+    if (!filteredProduct || !summaries.selectedItems || Object.keys(summaries.selectedItems).length === 0) {
+        alert("Please select a product and enter quantities to generate the PDF.");
+        return;
+    }
+
+    const doc = new jsPDF();
+    let y = 10;
+
+    // Shop Info
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("PLUS POINT", 10, y);
+    y += 7;
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text("Exclusive Men'swear", 10, y);
+    y += 5;
+    doc.text("Address: Garden Road, Chikhli.", 10, y);
+    y += 5;
+    doc.text("WhatsApp: 8866244409", 10, y);
+    y += 5;
+    doc.text("Instagram: PLUSPOINTCHIKHLI", 10, y);
+
+    // Order Summary Heading
+    y += 15;
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text("Order Summary", 10, y);
+    y += 10;
+
+    // Product Details
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Product: ${filteredProduct.type} – ${filteredProduct.color}`, 10, y);
+    y += 7;
+    doc.text(`Catalogue: Page ${filteredProduct.page} | File: ${filteredProduct.pdf ?? 'N/A'}`, 10, y);
+    y += 15;
+
+    // Ordered Items by Category
+    const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
+    categoriesOrder.forEach(category => {
+        if (summaries.selectedItems[category]) {
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "bold");
+            doc.text(`Category: ${category}`, 10, y);
+            y += 7;
+
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            summaries.selectedItems[category].forEach(item => {
+                doc.text(`Size: ${item.size} - Qty: ${item.quantity}`, 15, y);
+                y += 5;
+            });
+            y += 5;
+        }
+    });
+
+    // Total Items & Price
+    y += 10;
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text(`Total Items: ${summaries.totalItems}`, 10, y);
+    y += 7;
+    if (filteredProduct.type !== "Plain") {
+        doc.text(`Overall Total: ₹${summaries.totalPrice}`, 10, y);
+        y += 7;
+    }
+    
+    // Customer Details
+    y += 10;
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("Your Details:", 10, y);
+    y += 7;
+    
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Group Name: ${document.getElementById('groupName').value.trim()}`, 10, y);
+    y += 5;
+    doc.text(`Address: ${document.getElementById('deliveryAddress').value.trim()}`, 10, y);
+    y += 5;
+    doc.text(`Contact: ${document.getElementById('contactNumber').value.trim()}`, 10, y);
+
+    // Save PDF
+    doc.save(`Order-${filteredProduct.type}-${filteredProduct.color}.pdf`);
 });
