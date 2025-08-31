@@ -163,8 +163,6 @@ function renderProductPricing(product) {
               data-discount="${discountPrice}"
               class="qty-input"
               placeholder="Qty"/>
-            <span class="mrp-price"> ₹${MRP}</span>
-            <span class="discount-price">Offer: ₹${discountPrice}</span>
           </div>`;
       });
       categoryHtml += `</div>`;
