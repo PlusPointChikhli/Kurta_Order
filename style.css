@@ -79,6 +79,22 @@ h4 {
     transform: scale(1.02); /* Slight zoom on hover */
 }
 
+/* Add this new CSS code for 3D flip animation */
+@keyframes flipIn {
+  0% {
+    transform: perspective(400px) rotateY(-90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: perspective(400px) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+.image-preview.animate-flip img {
+    animation: flipIn 0.7s ease-out;
+}
+
 /* Form Section - Dropdowns */
 .form-section {
     display: flex;
@@ -183,7 +199,7 @@ h4 {
 .tab-button.active {
     background-color: #FF8C00; /* Dark Orange - Active tab color */
     color: white;
-    box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.1); /* Inner shadow for active state */
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1); /* Inner shadow for active state */
     position: relative;
     z-index: 1;
 }
@@ -509,4 +525,16 @@ h4 {
         justify-content: flex-start; /* Start items from left */
         gap: 5px; /* Adjust gap */
     }
+}
+.instruction-text {
+  text-align: center;
+  margin: -15px 0 25px;
+  font-size: 1.1em;
+  color: #555;
+}
+.instruction-text-2 {
+  text-align: center;
+  margin: 15px 0;
+  font-size: 1.1em;
+  color: #555;
 }
