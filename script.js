@@ -9,6 +9,7 @@ window.onload = async () => {
     }
     products = await res.json();
     document.getElementById('previewImage').src = 'Catlogue_icon/default.png';
+    document.getElementById("sendOrderWhatsapp").style.display = 'none'; // Initially hide the button
     populateDropdowns();
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -19,13 +20,17 @@ window.onload = async () => {
 function populateDropdowns() {
   const typeSelect = document.getElementById('typeSelect');
   const colorSelect = document.getElementById('colorSelect');
+  const colorLabel = document.querySelector('label[for="colorSelect"]');
+
+  // Initially hide the color select and its label
+  colorSelect.style.display = 'none';
+  colorLabel.style.display = 'none';
 
   // Reset both dropdowns initially
-  typeSelect.innerHTML = '<option value="">Select Type</option>';
+  typeSelect.innerHTML = '<option value="">Select Kurta Type</option>';
   colorSelect.innerHTML = '<option value="">Select Color</option>';
 
   // Populate type dropdown
-  // Ensure types are unique
   const uniqueTypes = [...new Set(products.map(p => p.type))];
   uniqueTypes.forEach(type => {
     const opt = document.createElement('option');
@@ -37,26 +42,35 @@ function populateDropdowns() {
   // When a type is selected
   typeSelect.addEventListener('change', () => {
     const selectedType = typeSelect.value;
-    // Get all products of the selected type to find all available colors for that type
-    const productsOfType = products.filter(p => p.type === selectedType);
+    
+    // Show color dropdown only if a type is selected
+    if (selectedType) {
+      colorSelect.style.display = 'block';
+      colorLabel.style.display = 'block';
+      const productsOfType = products.filter(p => p.type === selectedType);
 
-    // Reset color dropdown
-    colorSelect.innerHTML = '<option value="">Select Color</option>';
+      // Reset color dropdown
+      colorSelect.innerHTML = '<option value="">Select Color</option>';
 
-    // Populate color dropdown with unique colors for the selected type
-    const uniqueColors = [...new Set(productsOfType.flatMap(p => p.variants ? p.variants.map(v => v.color) : []))];
-    uniqueColors.forEach(color => {
-      const opt = document.createElement('option');
-      opt.value = color;
-      opt.textContent = color;
-      colorSelect.appendChild(opt);
-    });
+      // Populate color dropdown with unique colors for the selected type
+      const uniqueColors = [...new Set(productsOfType.flatMap(p => p.variants ? p.variants.map(v => v.color) : []))];
+      uniqueColors.forEach(color => {
+        const opt = document.createElement('option');
+        opt.value = color;
+        opt.textContent = color;
+        colorSelect.appendChild(opt);
+      });
+    } else {
+      // Hide color dropdown if no type is selected
+      colorSelect.style.display = 'none';
+      colorLabel.style.display = 'none';
+    }
 
     // Reset pricing, summary, and preview image
     document.getElementById('pricingOutputDiv').innerHTML = '<p>Please select a <strong>Type</strong> and <strong>Color</strong> to see pricing and sizes.</p>';
     document.getElementById('orderSummaryOutput').innerHTML = '';
     filteredProduct = null;
-    updateImageAndPricing(); // reset image
+    updateImageAndPricing();
   });
 
   // When a color is selected
@@ -69,6 +83,7 @@ function updateImageAndPricing() {
   const type = document.getElementById('typeSelect').value;
   const color = document.getElementById('colorSelect').value;
   const img = document.getElementById('previewImage');
+  const previewDiv = document.getElementById('imagePreviewContainer');
   const pricingOutputDiv = document.getElementById('pricingOutputDiv');
 
   // Find the exact product with the selected type and then its variant with the selected color
@@ -85,23 +100,32 @@ function updateImageAndPricing() {
     };
 
     const imagePath = variant.page
-      ? `Catlogue_icon/${product.type.toLowerCase().replace(/\s/g, '')}-page-${variant.page}.jpg` // Ensure correct image path based on type and page
+      ? `Catlogue_icon/${product.type.toLowerCase().replace(/\s/g, '')}-page-${variant.page}.jpg`
       : 'Catlogue_icon/default.png';
 
-    img.src = imagePath;
+    // Remove the animation class first to reset the animation
+    previewDiv.classList.remove('animate-flip');
+    // We need a small delay to allow the class to be removed and re-added, triggering the animation again
+    setTimeout(() => {
+        img.src = imagePath;
+        previewDiv.classList.add('animate-flip'); // Add the class to start the animation
+    }, 10);
+    
     img.onerror = () => {
       img.src = 'Catlogue_icon/default.png';
       console.warn(`Image not found: ${imagePath}. Displaying default.`);
+      previewDiv.classList.remove('animate-flip'); // Remove animation on error
     };
 
     renderProductPricing(filteredProduct); // Pass the combined filteredProduct
   } else {
     filteredProduct = null;
     img.src = 'Catlogue_icon/default.png';
+    previewDiv.classList.remove('animate-flip'); // Remove animation if selection is incomplete
     pricingOutputDiv.innerHTML = `
       <p>Please select both <strong>Type</strong> and <strong>Color</strong>
       to see product details and pricing.</p>`;
-    document.getElementById('orderSummaryOutput').innerHTML = ''; // Clear summary if selection is incomplete
+    document.getElementById('orderSummaryOutput').innerHTML = '';
   }
 }
 
@@ -117,6 +141,9 @@ function renderProductPricing(product) {
 
   let htmlContent = `
     <h3> Available Sizes & Pricing For  <span style="color: Navy;">${product.color}</span> <span style="color: BlueViolet;">${product.type}</span> Kurta:</h3>
+    <p class="instruction-text-2">
+      <strong>Step 2:</strong> Enter the quantity for each size you want to order.
+    </p>
     <div class="tabs">
       <div class="tab-buttons">
         <button class="tab-button active" data-tab="mens">Mens</button>
@@ -195,21 +222,15 @@ function renderProductPricing(product) {
 
 function showOrderSummary() {
   const orderSummaryOutput = document.getElementById('orderSummaryOutput');
+  const whatsappButton = document.getElementById("sendOrderWhatsapp");
 
   if (!filteredProduct) {
     orderSummaryOutput.innerHTML = '<p class="error-message">Please select a product (Type and Color) first.</p>';
-    // Return a structured object indicating an error
-    return {
-      html: '',
-      selectedItems: null,
-      totalItems: 0,
-      totalPrice: 0
-    };
+    whatsappButton.style.display = 'none'; // Keep it hidden
+    return { html: '', selectedItems: null, totalItems: 0, totalPrice: 0 };
   }
-  
-  const isPlainKurta = filteredProduct.type === "Plain";
 
-  // Select all qty inputs from the pricing section
+  const isPlainKurta = filteredProduct.type === "Plain";
   const qtyInputs = document.querySelectorAll('#pricingOutputDiv .qty-input');
   const selectedItemsByCategory = {};
   let totalItems = 0;
@@ -243,7 +264,6 @@ function showOrderSummary() {
 
   if (Object.keys(selectedItemsByCategory).length > 0) {
     htmlSummary += `<h3>Order Summary for ${filteredProduct.color} (${filteredProduct.type})</h3>`;
-    // Ensure consistent category order for summary
     const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
 
     categoriesOrder.forEach(category => {
@@ -270,13 +290,14 @@ function showOrderSummary() {
     if (!isPlainKurta) {
         htmlSummary += `<p><strong>Overall Total:</strong> ₹${totalPrice.toFixed(2)}</p>`;
     }
+    whatsappButton.style.display = 'block'; // Show button if there are items
   } else {
     htmlSummary = '<p>No items selected for order. Please enter quantities.</p>';
+    whatsappButton.style.display = 'none'; // Hide button if no items
   }
 
   orderSummaryOutput.innerHTML = htmlSummary;
 
-  // Return a single object with all the necessary data
   return {
     html: htmlSummary,
     selectedItems: selectedItemsByCategory,
@@ -290,37 +311,38 @@ document.getElementById("orderSummaryButton").addEventListener("click", showOrde
 document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
   const summaries = showOrderSummary();
 
-  // Handle case where no product is selected or no items are added
   if (!filteredProduct || !summaries.selectedItems || Object.keys(summaries.selectedItems).length === 0) {
     alert("Please select a product (Type and Color) and enter quantities before sending the order.");
     return;
   }
 
-  const groupName = document.getElementById('groupName').value.trim();
+  const customerName = document.getElementById('customerName').value.trim();
   const address = document.getElementById('deliveryAddress').value.trim();
   const contact = document.getElementById('contactNumber').value.trim();
 
-  if (!groupName || !address || !contact) {
-    alert("Please fill in Group Name, Delivery Address, and Contact Number before sending the order.");
+  if (!customerName || !contact) {
+    alert("Please fill in Customer Name and Contact Number before sending the order.");
     return;
   }
+  
+  if (!address) {
+    alert("Please fill in Delivery Address before sending the order.");
+    return;
+  }
+
 
   const mobileRegex = /^\d{10}$/;
   if (!mobileRegex.test(contact)) {
     alert("Please enter a valid 10-digit contact number.");
     return;
   }
-  
+
   const isPlainKurta = filteredProduct.type === "Plain";
-  
-  // Build the WhatsApp message based on the desired format
+
   let whatsappMessage = `Hi! I want to place a group order:\n\n`;
 
-  // First line: Product details
-  // Use optional chaining `?.` to safely access the pdf property and use 'N/A' if it doesn't exist
   whatsappMessage += `*Product:* ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number}\n📄 *Catalogue:* Page ${filteredProduct.page} | File: ${filteredProduct.pdf ?? 'N/A'} \n\n`;
 
-  // Second line: Itemized list by category
   const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
   let itemsSummary = [];
   categoriesOrder.forEach(category => {
@@ -331,14 +353,12 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
   });
   whatsappMessage += itemsSummary.join(' \n ');
 
-  // Third line: Totals
   whatsappMessage += ` \n *Total Items:* ${summaries.totalItems} \n\n`;
   if (!isPlainKurta) {
     whatsappMessage += `*Overall Total: ₹${summaries.totalPrice}* `;
   }
 
-  // Fourth line onwards: Customer details
-  whatsappMessage += `\n\n👥 *Group Name:* ${groupName} \n🏠 *Address:* ${address} \n📞 *Contact:* ${contact} \n🗓️ *Date: ${new Date().toLocaleDateString("en-IN")}`;
+  whatsappMessage += `\n\n👥 *Customer Name:* ${customerName} \n🏠 *Address:* ${address} \n📞 *Contact:* ${contact} \n🗓️ *Date: ${new Date().toLocaleDateString("en-IN")}`;
 
   const whatsappURL = `https://wa.me/919722609460?text=${encodeURIComponent(whatsappMessage)}`;
   window.open(whatsappURL, "_blank");
@@ -347,6 +367,15 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
 document.getElementById("downloadPdfButton").addEventListener("click", () => {
     const { jsPDF } = window.jspdf;
     const summaries = showOrderSummary();
+
+    const customerName = document.getElementById('customerName').value.trim();
+    const address = document.getElementById('deliveryAddress').value.trim();
+    const contact = document.getElementById('contactNumber').value.trim();
+    
+    if (!customerName || !contact || !address) {
+        alert("Please fill in all customer details before generating the PDF.");
+        return;
+    }
 
     if (!filteredProduct || !summaries.selectedItems || Object.keys(summaries.selectedItems).length === 0) {
         alert("Please select a product and enter quantities to generate the PDF.");
@@ -415,21 +444,21 @@ document.getElementById("downloadPdfButton").addEventListener("click", () => {
         doc.text(`Overall Total: ₹${summaries.totalPrice}`, 10, y);
         y += 7;
     }
-    
+
     // Customer Details
     y += 10;
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.text("Your Details:", 10, y);
     y += 7;
-    
+
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
-    doc.text(`Group Name: ${document.getElementById('groupName').value.trim()}`, 10, y);
+    doc.text(`Customer Name: ${customerName}`, 10, y);
     y += 5;
-    doc.text(`Address: ${document.getElementById('deliveryAddress').value.trim()}`, 10, y);
+    doc.text(`Address: ${address}`, 10, y);
     y += 5;
-    doc.text(`Contact: ${document.getElementById('contactNumber').value.trim()}`, 10, y);
+    doc.text(`Contact: ${contact}`, 10, y);
 
     // Save PDF
     doc.save(`Order-${filteredProduct.type}-${filteredProduct.color}.pdf`);
