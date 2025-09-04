@@ -135,8 +135,10 @@ function updateImageAndPricing(type, color) {
   }
 }
 
+// Updated renderProductPricing function
 function renderProductPricing(product) {
   const pricingOutputDiv = document.getElementById('pricingOutputDiv');
+
   if (!product || !product.pricing) {
     pricingOutputDiv.innerHTML = '<p>Is product ke liye koi pricing available nahi hai.</p>';
     return;
@@ -161,7 +163,10 @@ function renderProductPricing(product) {
     </div>
   `;
   pricingOutputDiv.innerHTML = htmlContent;
+  
+  // FIX: categoriesOrder array is now in lowercase to match HTML IDs
   const categoriesOrder = ['mens', 'ladies', 'kids'];
+
   categoriesOrder.forEach(category => {
     const tabPane = document.getElementById(`${category.toLowerCase()}-tab`);
     if (product.pricing[category] && Object.keys(product.pricing[category]).length > 0) {
@@ -208,6 +213,7 @@ function renderProductPricing(product) {
     });
   });
 }
+
 
 function showOrderSummary() {
   const orderSummaryOutput = document.getElementById('orderSummaryOutput');
