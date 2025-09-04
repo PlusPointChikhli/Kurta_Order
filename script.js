@@ -12,11 +12,13 @@ const colorOptions = document.getElementById('colorOptions');
 
 window.onload = async () => {
   try {
+    // Read the products.json file.
     const res = await fetch('products.json');
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
     products = await res.json();
+    console.log("Products data loaded successfully:", products);
     document.getElementById('previewImage').src = 'Catlogue_icon/default.png';
     document.getElementById("sendOrderWhatsapp").style.display = 'none'; // Initially hide the button
     
@@ -619,4 +621,3 @@ document.querySelector('.more-like-this-btn').addEventListener('click', () => {
     alert("Please select a product type and color first to see similar products.");
   }
 });
-
