@@ -2,8 +2,8 @@ let products = [];
 let filteredProduct = null;
 
 const typeButtonsContainer = document.getElementById('typeButtonsContainer');
-const colorSelectionSection = document.getElementById('colorSelectionSection'); // Renamed
-const colorGrid = document.getElementById('colorGrid'); // Renamed
+const colorSelectionSection = document.getElementById('colorSelectionSection');
+const colorGrid = document.getElementById('colorGrid');
 
 window.onload = async () => {
   try {
@@ -15,17 +15,16 @@ window.onload = async () => {
     document.getElementById('previewImage').src = 'Catlogue_icon/default.png';
     document.getElementById("sendOrderWhatsapp").style.display = 'none';
     
-    // Initially hide color selection section
+    // Initially hide color selection and pricing sections
     colorSelectionSection.style.display = 'none';
-    // Hide pricing output initially
     document.getElementById('pricingOutputDiv').style.display = 'none';
 
     populateTypeButtons();
 
   } catch (error) {
     console.error("Error fetching products:", error);
-    document.getElementById('pricingOutputDiv').innerHTML = '<p style="color: red;">Error loading product data. Please try again later.</p>';
-    document.getElementById('pricingOutputDiv').style.display = 'block'; // Show error message
+    document.getElementById('pricingOutputDiv').innerHTML = '<p style="color: red;">Product data load hone mein error hai. Dobara try karein.</p>';
+    document.getElementById('pricingOutputDiv').style.display = 'block';
   }
 };
 
@@ -38,17 +37,13 @@ function populateTypeButtons() {
     button.textContent = type;
     button.dataset.type = type;
     button.addEventListener('click', () => {
-      // Deactivate all type buttons
       document.querySelectorAll('.type-button').forEach(btn => btn.classList.remove('active'));
-      // Activate the clicked type button
       button.classList.add('active');
       
-      // Load colors for the selected type
       loadColorsForType(type);
       
-      // Reset other sections
-      document.getElementById('pricingOutputDiv').style.display = 'none'; // Hide pricing until color is selected
-      document.getElementById('pricingOutputDiv').innerHTML = '<p>Please select a <strong>Type</strong> and <strong>Color</strong> to see pricing and sizes.</p>';
+      document.getElementById('pricingOutputDiv').style.display = 'none';
+      document.getElementById('pricingOutputDiv').innerHTML = '<p>Pehle Type aur Color select karein.</p>';
       document.getElementById('orderSummaryOutput').innerHTML = '';
       document.getElementById('previewImage').src = 'Catlogue_icon/default.png';
       filteredProduct = null;
@@ -57,10 +52,9 @@ function populateTypeButtons() {
   });
 }
 
-// Renamed from loadSimilarProducts to loadColorsForType
 function loadColorsForType(selectedType) {
-  colorGrid.innerHTML = ''; // Clear previous colors
-  colorSelectionSection.style.display = 'block'; // Show the section
+  colorGrid.innerHTML = '';
+  colorSelectionSection.style.display = 'block';
 
   const productOfType = products.find(p => p.type === selectedType);
 
@@ -74,28 +68,23 @@ function loadColorsForType(selectedType) {
     if (!addedColors.has(variant.color)) {
       addedColors.add(variant.color);
 
-      // Construct image path for color selection thumbnails
       const imagePath = `Catlogue_icon/${productOfType.type.toLowerCase().replace(/\s/g, '')}-page-${variant.page}.jpg`;
-      const colorItem = document.createElement('div'); // Renamed from productItem
-      colorItem.classList.add('color-item'); // Renamed class
+      const colorItem = document.createElement('div');
+      colorItem.classList.add('color-item');
       colorItem.innerHTML = `
         <img src="${imagePath}" alt="${variant.color} ${productOfType.type}">
         <span>${variant.color}</span>
       `;
       colorItem.dataset.type = productOfType.type;
       colorItem.dataset.color = variant.color;
-      colorItem.dataset.page = variant.page; // Store page for direct image loading
-
+      
       colorItem.addEventListener('click', () => {
         const type = colorItem.dataset.type;
         const color = colorItem.dataset.color;
         
-        // Remove active class from all color items
         document.querySelectorAll('.color-item').forEach(item => item.classList.remove('active'));
-        // Add active class to the clicked item
         colorItem.classList.add('active');
 
-        // Update the main preview image and pricing
         updateImageAndPricing(type, color);
       });
 
@@ -135,13 +124,13 @@ function updateImageAndPricing(type, color) {
     };
 
     renderProductPricing(filteredProduct);
-    pricingOutputDiv.style.display = 'block'; // Show pricing div once a color is selected
+    pricingOutputDiv.style.display = 'block';
   } else {
     filteredProduct = null;
     img.src = 'Catlogue_icon/default.png';
     previewDiv.classList.remove('animate-flip');
-    pricingOutputDiv.innerHTML = `<p>Please select both <strong>Type</strong> and <strong>Color</strong> to see product details and pricing.</p>`;
-    pricingOutputDiv.style.display = 'block'; // Show message
+    pricingOutputDiv.innerHTML = `<p>Pehle Type aur Color select karein.</p>`;
+    pricingOutputDiv.style.display = 'block';
     document.getElementById('orderSummaryOutput').innerHTML = '';
   }
 }
@@ -149,14 +138,14 @@ function updateImageAndPricing(type, color) {
 function renderProductPricing(product) {
   const pricingOutputDiv = document.getElementById('pricingOutputDiv');
   if (!product || !product.pricing) {
-    pricingOutputDiv.innerHTML = '<p>No pricing available for this selection.</p>';
+    pricingOutputDiv.innerHTML = '<p>Is product ke liye koi pricing available nahi hai.</p>';
     return;
   }
   const isPlainKurta = product.type === "Plain";
   let htmlContent = `
     <h3>Available Sizes & Pricing for <span style="color: #2980b9;">${product.color}</span> <span style="color: #3498db;">${product.type}</span> Kurta:</h3>
     <p class="instruction-text-2">
-      <strong>Step 2:</strong> Enter the quantity for each size you want to order.
+      <strong>Step 2:</strong> Har size ke liye quantity daalein.
     </p>
     <div class="tabs">
       <div class="tab-buttons">
@@ -206,7 +195,7 @@ function renderProductPricing(product) {
       categoryHtml += `</div>`;
       tabPane.innerHTML = categoryHtml;
     } else {
-      tabPane.innerHTML = `<p class="no-sizes-msg">No ${category} sizes available for this product.</p>`;
+      tabPane.innerHTML = `<p class="no-sizes-msg">Is product ke liye ${category} sizes available nahi hain.</p>`;
     }
   });
   document.querySelectorAll('.tab-button').forEach(button => {
@@ -225,7 +214,7 @@ function showOrderSummary() {
   const whatsappButton = document.getElementById("sendOrderWhatsapp");
 
   if (!filteredProduct) {
-    orderSummaryOutput.innerHTML = '<p class="error-message">Please select a product (Type and Color) first.</p>';
+    orderSummaryOutput.innerHTML = '<p class="error-message">Pehle koi product select karein (Type aur Color).</p>';
     whatsappButton.style.display = 'none';
     return { html: '', selectedItems: null, totalItems: 0, totalPrice: 0 };
   }
@@ -292,7 +281,7 @@ function showOrderSummary() {
     }
     whatsappButton.style.display = 'block';
   } else {
-    htmlSummary = '<p>No items selected for order. Please enter quantities.</p>';
+    htmlSummary = '<p>Order ke liye koi item select nahi kiya gaya hai. Kripya quantity daalein.</p>';
     whatsappButton.style.display = 'none';
   }
 
@@ -311,23 +300,23 @@ document.getElementById("orderSummaryButton").addEventListener("click", showOrde
 document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
   const summaries = showOrderSummary();
   if (!filteredProduct || !summaries.selectedItems || Object.keys(summaries.selectedItems).length === 0) {
-    alert("Please select a product (Type and Color) and enter quantities before sending the order.");
+    alert("Kripya product (Type aur Color) select karein aur quantities daalein, phir order bhejein.");
     return;
   }
   const customerName = document.getElementById('customerName').value.trim();
   const address = document.getElementById('deliveryAddress').value.trim();
   const contact = document.getElementById('contactNumber').value.trim();
   if (!customerName || !contact || !address) {
-    alert("Please fill in Customer Name, Address, and Contact Number before sending the order.");
+    alert("Kripya Customer Ka Naam, Address, aur Contact Number bharein, phir order bhejein.");
     return;
   }
   const mobileRegex = /^\d{10}$/;
   if (!mobileRegex.test(contact)) {
-    alert("Please enter a valid 10-digit contact number.");
+    alert("Kripya sahi 10-digit ka contact number daalein.");
     return;
   }
   const isPlainKurta = filteredProduct.type === "Plain";
-  let whatsappMessage = `Hi! I want to place a group order:\n\n`;
+  let whatsappMessage = `Namaste! Main ek group order dena chahta hoon:\n\n`;
   whatsappMessage += `*Product:* ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number}\n📄 *Catalogue:* Page ${filteredProduct.page} | File: ${filteredProduct.pdf ?? 'N/A'} \n\n`;
   const categoriesOrder = ['mens', 'ladies', 'kids'];
   let itemsSummary = [];
@@ -340,9 +329,9 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
   whatsappMessage += itemsSummary.join(' \n ');
   whatsappMessage += ` \n *Total Items:* ${summaries.totalItems} \n\n`;
   if (!isPlainKurta) {
-    whatsappMessage += `*Overall Total: ₹${summaries.totalPrice}* `;
+    whatsappMessage += `*Poora Total: ₹${summaries.totalPrice}* `;
   }
-  whatsappMessage += `\n\n👥 *Customer Name:* ${customerName} \n🏠 *Address:* ${address} \n📞 *Contact:* ${contact} \n🗓️ *Date: ${new Date().toLocaleDateString("en-IN")}`;
+  whatsappMessage += `\n\n👥 *Customer Ka Naam:* ${customerName} \n🏠 *Address:* ${address} \n📞 *Contact:* ${contact} \n🗓️ *Tarikh: ${new Date().toLocaleDateString("en-IN")}`;
   const whatsappURL = `https://wa.me/919722609460?text=${encodeURIComponent(whatsappMessage)}`;
   window.open(whatsappURL, "_blank");
 });
@@ -354,11 +343,11 @@ document.getElementById("downloadPdfButton").addEventListener("click", () => {
     const address = document.getElementById('deliveryAddress').value.trim();
     const contact = document.getElementById('contactNumber').value.trim();
     if (!customerName || !contact || !address) {
-        alert("Please fill in all customer details before generating the PDF.");
+        alert("Kripya PDF banane se pehle saari customer details bharein.");
         return;
     }
     if (!filteredProduct || !summaries.selectedItems || Object.keys(summaries.selectedItems).length === 0) {
-        alert("Please select a product and enter quantities to generate the PDF.");
+        alert("Kripya PDF banane ke liye product select karein aur quantities daalein.");
         return;
     }
     const doc = new jsPDF();
@@ -428,12 +417,11 @@ document.getElementById("downloadPdfButton").addEventListener("click", () => {
 });
 
 
-// Event listener for the "More Like This" button
 document.querySelector('.more-like-this-btn').addEventListener('click', () => {
-    const colorSelectionSection = document.getElementById('colorSelectionSection'); // Renamed
+    const colorSelectionSection = document.getElementById('colorSelectionSection');
     if (colorSelectionSection.style.display === 'block') {
         colorSelectionSection.scrollIntoView({ behavior: 'smooth' });
     } else {
-        alert("Please select a product type first to see available colors.");
+        alert("Pehle type select karein taaki colors dikhai dein.");
     }
 });
