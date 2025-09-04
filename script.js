@@ -181,7 +181,7 @@ function renderProductPricing(product) {
       sortedSizeKeys.forEach(sizeKey => {
         const mrp = sizes[sizeKey].MRP;
         const discountPercentage = 0.25;
-        const discountPrice = isPlainKurta ? 0 : Math.round((mrp - (mrp * discountPercentage)) / 10) * 10;
+        const discountPrice = isPlainKurta ? mrp : Math.round((mrp - (mrp * discountPercentage)) / 10) * 10;
         categoryHtml += `
           <div class="size-item ${isPlainKurta ? 'plain-kurta-item' : ''}">
             <label>${sizeKey}:</label>
@@ -243,16 +243,14 @@ function showOrderSummary() {
         quantity,
         mrp,
         discountPrice,
-        lineTotal: isPlainKurta ? quantity : quantity * discountPrice
+        lineTotal: quantity * (isPlainKurta ? mrp : discountPrice)
       };
 
       if (!selectedItemsByCategory[category]) selectedItemsByCategory[category] = [];
       selectedItemsByCategory[category].push(itemDetails);
 
       totalItems += quantity;
-      if (!isPlainKurta) {
-          totalPrice += itemDetails.lineTotal;
-      }
+      totalPrice += itemDetails.lineTotal;
     }
   });
 
@@ -264,18 +262,10 @@ function showOrderSummary() {
 
     categoriesOrder.forEach(category => {
       if (selectedItemsByCategory[category] && selectedItemsByCategory[category].length > 0) {
-        if (!isPlainKurta) {
-          htmlSummary += `<h4>Category: ${category}</h4><table><thead><tr><th>Size</th><th>Qty</th><th>Offer Price</th><th>Total</th></tr></thead><tbody>`;
-        } else {
-          htmlSummary += `<h4>Category: ${category}</h4><table><thead><tr><th>Size</th><th>Qty</th></tr></thead><tbody>`;
-        }
+        htmlSummary += `<h4>Category: ${category}</h4><table><thead><tr><th>Size</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>`;
 
         selectedItemsByCategory[category].forEach(item => {
-          if (!isPlainKurta) {
-            htmlSummary += `<tr><td>${item.size}</td><td>${item.quantity}</td><td>₹${item.discountPrice}</td><td>₹${item.lineTotal}</td></tr>`;
-          } else {
-            htmlSummary += `<tr><td>${item.size}</td><td>${item.quantity}</td></tr>`;
-          }
+          htmlSummary += `<tr><td>${item.size}</td><td>${item.quantity}</td><td>₹${item.mrp}</td><td>₹${item.lineTotal}</td></tr>`;
         });
 
         htmlSummary += `</tbody></table>`;
@@ -283,9 +273,8 @@ function showOrderSummary() {
     });
 
     htmlSummary += `<p><strong>Total Items:</strong> ${totalItems}</p>`;
-    if (!isPlainKurta) {
-        htmlSummary += `<p><strong>Overall Total:</strong> ₹${totalPrice.toFixed(2)}</p>`;
-    }
+    htmlSummary += `<p><strong>Overall Total:</strong> ₹${totalPrice.toFixed(2)}</p>`;
+
     whatsappButton.style.display = 'block';
   } else {
     htmlSummary = '<p>Order ke liye koi item select nahi kiya gaya hai. Kripya quantity daalein.</p>';
@@ -298,7 +287,7 @@ function showOrderSummary() {
     html: htmlSummary,
     selectedItems: selectedItemsByCategory,
     totalItems,
-    totalPrice: isPlainKurta ? 'N/A' : totalPrice.toFixed(2)
+    totalPrice: totalPrice.toFixed(2)
   };
 }
 
@@ -335,9 +324,7 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
   });
   whatsappMessage += itemsSummary.join(' \n ');
   whatsappMessage += ` \n *Total Items:* ${summaries.totalItems} \n\n`;
-  if (!isPlainKurta) {
-    whatsappMessage += `*Poora Total: ₹${summaries.totalPrice}* `;
-  }
+  whatsappMessage += `*Poora Total: ₹${summaries.totalPrice}* `;
   whatsappMessage += `\n\n👥 *Customer Ka Naam:* ${customerName} \n🏠 *Address:* ${address} \n📞 *Contact:* ${contact} \n🗓️ *Tarikh: ${new Date().toLocaleDateString("en-IN")}`;
   const whatsappURL = `https://wa.me/919722609460?text=${encodeURIComponent(whatsappMessage)}`;
   window.open(whatsappURL, "_blank");
@@ -393,7 +380,7 @@ document.getElementById("downloadPdfButton").addEventListener("click", () => {
             doc.setFontSize(10);
             doc.setFont("helvetica", "normal");
             summaries.selectedItems[category].forEach(item => {
-                doc.text(`Size: ${item.size} - Qty: ${item.quantity}`, 15, y);
+                doc.text(`Size: ${item.size} - Qty: ${item.quantity} - Price: ₹${item.mrp} - Total: ₹${item.lineTotal}`, 15, y);
                 y += 5;
             });
             y += 5;
@@ -404,10 +391,8 @@ document.getElementById("downloadPdfButton").addEventListener("click", () => {
     doc.setFont("helvetica", "bold");
     doc.text(`Total Items: ${summaries.totalItems}`, 10, y);
     y += 7;
-    if (filteredProduct.type !== "Plain") {
-        doc.text(`Overall Total: ₹${summaries.totalPrice}`, 10, y);
-        y += 7;
-    }
+    doc.text(`Overall Total: ₹${summaries.totalPrice}`, 10, y);
+    y += 7;
     y += 10;
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
