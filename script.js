@@ -15,7 +15,6 @@ window.onload = async () => {
     document.getElementById('previewImage').src = 'Catlogue_icon/default.png';
     document.getElementById("sendOrderWhatsapp").style.display = 'none';
     
-    // Initially hide color selection and pricing sections
     colorSelectionSection.style.display = 'none';
     document.getElementById('pricingOutputDiv').style.display = 'none';
 
@@ -135,7 +134,6 @@ function updateImageAndPricing(type, color) {
   }
 }
 
-// Updated renderProductPricing function
 function renderProductPricing(product) {
   const pricingOutputDiv = document.getElementById('pricingOutputDiv');
 
@@ -181,9 +179,9 @@ function renderProductPricing(product) {
       sortedSizeKeys.forEach(sizeKey => {
         const mrp = sizes[sizeKey].MRP;
         const discountPercentage = 0.25;
-        const discountPrice = isPlainKurta ? mrp : Math.round((mrp - (mrp * discountPercentage)) / 10) * 10;
+        const discountPrice = Math.round((mrp - (mrp * discountPercentage)) / 10) * 10;
         categoryHtml += `
-          <div class="size-item ${isPlainKurta ? 'plain-kurta-item' : ''}">
+          <div class="size-item">
             <label>${sizeKey}:</label>
             <input type="number" min="0" value="0"
               data-category="${category}"
@@ -192,7 +190,7 @@ function renderProductPricing(product) {
               data-discount="${discountPrice}"
               class="qty-input"
               placeholder="Qty"/>
-            ${!isPlainKurta ? `<span class="mrp-price"> ₹${mrp}</span>` : ''}
+            ${!isPlainKurta ? `<span class="mrp-price"> ₹${mrp}</span>` : `<span class="mrp-price"> ₹${mrp}</span>`}
             ${!isPlainKurta ? `<span class="discount-price">Offer: ₹${discountPrice}</span>` : ''}
           </div>`;
       });
@@ -237,13 +235,14 @@ function showOrderSummary() {
       const size = input.dataset.size;
       const mrp = parseFloat(input.dataset.mrp);
       const discountPrice = parseFloat(input.dataset.discount);
+      
+      const priceToUse = isPlainKurta ? mrp : discountPrice;
 
       const itemDetails = {
         size,
         quantity,
-        mrp,
-        discountPrice,
-        lineTotal: quantity * (isPlainKurta ? mrp : discountPrice)
+        price: priceToUse,
+        lineTotal: quantity * priceToUse
       };
 
       if (!selectedItemsByCategory[category]) selectedItemsByCategory[category] = [];
@@ -265,7 +264,7 @@ function showOrderSummary() {
         htmlSummary += `<h4>Category: ${category}</h4><table><thead><tr><th>Size</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>`;
 
         selectedItemsByCategory[category].forEach(item => {
-          htmlSummary += `<tr><td>${item.size}</td><td>${item.quantity}</td><td>₹${item.mrp}</td><td>₹${item.lineTotal}</td></tr>`;
+          htmlSummary += `<tr><td>${item.size}</td><td>${item.quantity}</td><td>₹${item.price}</td><td>₹${item.lineTotal.toFixed(2)}</td></tr>`;
         });
 
         htmlSummary += `</tbody></table>`;
@@ -311,7 +310,6 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
     alert("Kripya sahi 10-digit ka contact number daalein.");
     return;
   }
-  const isPlainKurta = filteredProduct.type === "Plain";
   let whatsappMessage = `Namaste! Main ek group order dena chahta hoon:\n\n`;
   whatsappMessage += `*Product:* ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number}\n📄 *Catalogue:* Page ${filteredProduct.page} | File: ${filteredProduct.pdf ?? 'N/A'} \n\n`;
   const categoriesOrder = ['mens', 'ladies', 'kids'];
@@ -380,7 +378,7 @@ document.getElementById("downloadPdfButton").addEventListener("click", () => {
             doc.setFontSize(10);
             doc.setFont("helvetica", "normal");
             summaries.selectedItems[category].forEach(item => {
-                doc.text(`Size: ${item.size} - Qty: ${item.quantity} - Price: ₹${item.mrp} - Total: ₹${item.lineTotal}`, 15, y);
+                doc.text(`Size: ${item.size} - Qty: ${item.quantity} - Price: ₹${item.price} - Total: ₹${item.lineTotal}`, 15, y);
                 y += 5;
             });
             y += 5;
