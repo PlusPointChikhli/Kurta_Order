@@ -1,9 +1,9 @@
 /* general body styles */
 body {
-    font-family: 'Poppins', sans-serif; /* Modern font */
+    font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 20px;
-    background: linear-gradient(135deg, #f0f2f5 0%, #e0e5ec 100%); /* Soft, modern gradient */
+    background: linear-gradient(135deg, #f0f2f5 0%, #e0e5ec 100%);
     color: #333;
     display: flex;
     justify-content: center;
@@ -16,27 +16,27 @@ body {
     background-color: #ffffff;
     padding: 30px 40px;
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Softer, modern shadow */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     max-width: 900px;
     width: 100%;
     margin-top: 20px;
-    border: 1px solid #e0e0e0; /* Subtle border */
+    border: 1px solid #e0e0e0;
 }
 
 /* headings */
 h1 {
     text-align: center;
-    color: #2c3e50; /* Darker, modern blue */
+    color: #2c3e50;
     margin-bottom: 25px;
     font-size: 2.8em;
-    font-family: 'Playfair Display', serif; /* Elegant display font */
+    font-family: 'Playfair Display', serif;
     letter-spacing: 1px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 h2 {
-    color: #34495e; /* Medium dark blue */
-    border-bottom: 2px solid #ecf0f1; /* Light separator */
+    color: #34495e;
+    border-bottom: 2px solid #ecf0f1;
     padding-bottom: 10px;
     margin-top: 30px;
     font-size: 2em;
@@ -44,14 +44,14 @@ h2 {
 }
 
 h3 {
-    color: #2980b9; /* Bright blue */
+    color: #2980b9;
     margin-bottom: 15px;
     font-size: 1.6em;
     font-family: 'Poppins', sans-serif;
 }
 
 h4 {
-    color: #3498db; /* Lighter blue for categories */
+    color: #3498db;
     margin-top: 20px;
     margin-bottom: 10px;
     font-size: 1.3em;
@@ -60,10 +60,10 @@ h4 {
 
 /* image preview section */
 .image-preview {
-    position: relative; /* For "More Like This" button positioning */
+    position: relative;
     text-align: center;
     margin-bottom: 30px;
-    background-color: #f8f9fa; /* Very light background */
+    background-color: #f8f9fa;
     border-radius: 10px;
     padding: 15px;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.03);
@@ -72,9 +72,9 @@ h4 {
 #previewImage {
     max-width: 100%;
     height: auto;
-    max-height: 380px; /* Slightly increased height */
+    max-height: 380px;
     border-radius: 8px;
-    border: 3px solid #3498db; /* Modern blue border */
+    border: 3px solid #3498db;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     transition: transform 0.4s ease-in-out;
 }
@@ -86,8 +86,8 @@ h4 {
 /* "More Like This" Button */
 .more-like-this-btn {
     position: absolute;
-    bottom: 30px; /* Adjust as needed */
-    right: 30px; /* Adjust as needed */
+    bottom: 30px;
+    right: 30px;
     background-color: rgba(255, 255, 255, 0.9);
     color: #333;
     border: 1px solid #ccc;
@@ -130,117 +130,60 @@ h4 {
     animation: flipIn 0.7s ease-out;
 }
 
-/* form section - dropdowns */
+/* form section - new buttons */
 .form-section {
     display: grid;
-    grid-template-columns: auto 1fr; /* Label then custom dropdown */
-    gap: 20px 15px; /* Row gap, column gap */
+    grid-template-columns: auto 1fr;
+    gap: 20px 15px;
     align-items: center;
     margin-bottom: 25px;
     padding: 20px;
-    background-color: #fbfdff; /* Very light blue background */
+    background-color: #fbfdff;
     border-radius: 12px;
     border: 1px solid #e9ecef;
 }
 
 .form-section label {
     font-weight: 600;
-    color: #495057; /* Darker grey */
+    color: #495057;
     font-size: 1.1em;
 }
 
-/* Hide original select elements */
-.hidden-select {
-    display: none !important;
+.type-buttons-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-/* Custom Dropdown Styling */
-.custom-dropdown {
-    position: relative;
-    width: 100%;
-    cursor: pointer;
-    font-size: 1em;
-    color: #444;
+.type-button {
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: 2px solid #ced4da;
+  background-color: #ffffff;
+  color: #444;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.custom-dropdown .selected-item {
-    background-color: #ffffff;
-    border: 2px solid #ced4da; /* Light grey border */
-    border-radius: 8px;
-    padding: 12px 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+.type-button:hover {
+  border-color: #aebec9;
 }
 
-.custom-dropdown .selected-item:hover {
-    border-color: #aebec9;
+.type-button.active {
+  background-color: #3498db;
+  color: #ffffff;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  transform: translateY(-2px);
 }
-
-.custom-dropdown.active .selected-item {
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-}
-
-.dropdown-arrow {
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid #6c757d; /* Dark grey arrow */
-    transition: transform 0.3s ease;
-}
-
-.custom-dropdown.active .dropdown-arrow {
-    transform: rotate(180deg);
-}
-
-.dropdown-options {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    max-height: 250px; /* Limit height for scroll */
-    overflow-y: auto;
-    background-color: #ffffff;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    display: none; /* Hidden by default */
-    padding: 5px 0;
-}
-
-.custom-dropdown.active .dropdown-options {
-    display: block; /* Show when active */
-}
-
-.dropdown-options .option-item {
-    padding: 10px 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.dropdown-options .option-item:hover {
-    background-color: #f0f8ff; /* Light blue on hover */
-    color: #2c3e50;
-}
-
-.dropdown-options .option-item.selected {
-    background-color: #e6f2ff; /* Lighter blue for selected item */
-    font-weight: 600;
-}
-
-.dropdown-options .option-item img {
-    width: 30px; /* Thumbnail size */
-    height: 30px;
-    border-radius: 5px;
-    object-fit: cover;
-    border: 1px solid #e0e0e0;
+.type-button.active:hover {
+    border-color: #2980b9;
 }
 
 /* Similar Products Section */
@@ -262,7 +205,7 @@ h4 {
 
 .similar-products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 4 columns on larger screens */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 20px;
     justify-content: center;
 }
@@ -272,13 +215,14 @@ h4 {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     padding: 10px;
+    border: 3px solid transparent;
 }
 
 .similar-product-item:hover {
@@ -286,8 +230,13 @@ h4 {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
 }
 
+.similar-product-item.active {
+    border-color: #8e44ad;
+    box-shadow: 0 0 0 4px rgba(142, 68, 173, 0.3);
+}
+
 .similar-product-item img {
-    width: 100px; /* Thumbnail size for similar products */
+    width: 100px;
     height: 100px;
     object-fit: cover;
     border-radius: 8px;
@@ -331,7 +280,7 @@ h4 {
 /* tab buttons */
 .tab-buttons {
     display: flex;
-    background-color: #ecf0f1; /* Light blue-grey for buttons */
+    background-color: #ecf0f1;
     border-bottom: 1px solid #e0e0e0;
 }
 
@@ -358,7 +307,7 @@ h4 {
 }
 
 .tab-button.active {
-    background-color: #3498db; /* Blue active tab color */
+    background-color: #3498db;
     color: white;
     box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
     position: relative;
@@ -436,7 +385,7 @@ h4 {
 }
 
 .qty-input {
-    width: 60px; /* Slightly wider input */
+    width: 60px;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 6px;
@@ -462,7 +411,7 @@ h4 {
 }
 
 .discount-price {
-    color: #28a745; /* Bootstrap green for discount */
+    color: #28a745;
     font-weight: 700;
     font-size: 1em;
     white-space: nowrap;
@@ -485,7 +434,7 @@ h4 {
 }
 
 #orderSummaryButton {
-    background-color: #6c757d; /* Darker grey for summary */
+    background-color: #6c757d;
     color: white;
 }
 
@@ -496,7 +445,7 @@ h4 {
 }
 
 .primary-button {
-    background-color: #28a745; /* Success green for primary actions */
+    background-color: #28a745;
     color: white;
     font-size: 1.2em;
     padding: 16px 40px;
@@ -552,11 +501,11 @@ h4 {
 }
 
 .summary-section p strong {
-    color: #dc3545; /* Red for totals */
+    color: #dc3545;
 }
 
 .error-message {
-    color: #dc3545; /* Bootstrap red */
+    color: #dc3545;
     font-weight: 600;
     text-align: center;
     padding: 12px;
@@ -567,7 +516,7 @@ h4 {
 
 /* customer details section */
 .customer-section {
-    background-color: #f7faff; /* Lighter blue tint */
+    background-color: #f7faff;
     padding: 25px;
     border-radius: 12px;
     border: 1px solid #d0e0f0;
@@ -620,7 +569,7 @@ h4 {
     }
 
     .form-section {
-        grid-template-columns: 1fr; /* Stack on smaller screens */
+        grid-template-columns: 1fr;
         gap: 15px;
     }
 
@@ -648,7 +597,7 @@ h4 {
     }
 
     .similar-products-grid {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Adjust for smaller items */
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }
 
     .more-like-this-btn {
@@ -695,7 +644,7 @@ h4 {
     }
 
     .similar-products-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 columns on very small screens */
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 .instruction-text {
