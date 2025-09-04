@@ -1,6 +1,15 @@
 let products = [];
 let filteredProduct = null;
 
+// Custom dropdown elements
+const customTypeDropdown = document.getElementById('customTypeDropdown');
+const selectedType = document.getElementById('selectedType');
+const typeOptions = document.getElementById('typeOptions');
+
+const customColorDropdown = document.getElementById('customColorDropdown');
+const selectedColor = document.getElementById('selectedColor');
+const colorOptions = document.getElementById('colorOptions');
+
 window.onload = async () => {
   try {
     const res = await fetch('products.json');
@@ -10,73 +19,134 @@ window.onload = async () => {
     products = await res.json();
     document.getElementById('previewImage').src = 'Catlogue_icon/default.png';
     document.getElementById("sendOrderWhatsapp").style.display = 'none'; // Initially hide the button
-    populateDropdowns();
+    
+    // Hide color dropdown initially
+    customColorDropdown.style.display = 'none';
+    document.querySelector('label[for="colorSelect"]').style.display = 'none';
+
+    populateCustomDropdowns();
+    setupCustomDropdownListeners();
+    // Initially hide similar products section
+    document.getElementById('similarProductsSection').style.display = 'none';
+
   } catch (error) {
     console.error("Error fetching products:", error);
     document.getElementById('pricingOutputDiv').innerHTML = '<p style="color: red;">Error loading product data. Please try again later.</p>';
   }
 };
 
-function populateDropdowns() {
-  const typeSelect = document.getElementById('typeSelect');
-  const colorSelect = document.getElementById('colorSelect');
-  const colorLabel = document.querySelector('label[for="colorSelect"]');
-
-  // Initially hide the color select and its label
-  colorSelect.style.display = 'none';
-  colorLabel.style.display = 'none';
-
-  // Reset both dropdowns initially
-  typeSelect.innerHTML = '<option value="">Select Kurta Type</option>';
-  colorSelect.innerHTML = '<option value="">Select Color</option>';
-
-  // Populate type dropdown
+function populateCustomDropdowns() {
+  // Populate Type Dropdown
   const uniqueTypes = [...new Set(products.map(p => p.type))];
+  typeOptions.innerHTML = ''; // Clear previous options
   uniqueTypes.forEach(type => {
-    const opt = document.createElement('option');
-    opt.value = type;
-    opt.textContent = type;
-    typeSelect.appendChild(opt);
+    const optionItem = document.createElement('div');
+    optionItem.classList.add('option-item');
+    optionItem.dataset.value = type;
+    optionItem.textContent = type;
+    typeOptions.appendChild(optionItem);
   });
 
-  // When a type is selected
-  typeSelect.addEventListener('change', () => {
-    const selectedType = typeSelect.value;
-    
-    // Show color dropdown only if a type is selected
-    if (selectedType) {
-      colorSelect.style.display = 'block';
-      colorLabel.style.display = 'block';
-      const productsOfType = products.filter(p => p.type === selectedType);
+  // Color dropdown remains empty until a type is selected
+  colorOptions.innerHTML = '';
+  selectedColor.querySelector('span').textContent = 'Select Color';
+}
 
-      // Reset color dropdown
-      colorSelect.innerHTML = '<option value="">Select Color</option>';
+function setupCustomDropdownListeners() {
+  // Toggle Type dropdown
+  selectedType.addEventListener('click', (event) => {
+    event.stopPropagation(); // Prevent document click from closing immediately
+    customTypeDropdown.classList.toggle('active');
+    // Close color dropdown if open
+    customColorDropdown.classList.remove('active');
+  });
 
-      // Populate color dropdown with unique colors for the selected type
-      const uniqueColors = [...new Set(productsOfType.flatMap(p => p.variants ? p.variants.map(v => v.color) : []))];
-      uniqueColors.forEach(color => {
-        const opt = document.createElement('option');
-        opt.value = color;
-        opt.textContent = color;
-        colorSelect.appendChild(opt);
-      });
-    } else {
-      // Hide color dropdown if no type is selected
-      colorSelect.style.display = 'none';
-      colorLabel.style.display = 'none';
+  // Select Type option
+  typeOptions.addEventListener('click', (event) => {
+    const selectedOption = event.target.closest('.option-item');
+    if (selectedOption) {
+      const type = selectedOption.dataset.value;
+      selectedType.querySelector('span').textContent = type;
+      document.getElementById('typeSelect').value = type; // Update hidden select
+      customTypeDropdown.classList.remove('active');
+      
+      // Update color dropdown based on selected type
+      populateColorDropdown(type);
+      
+      // Reset pricing, summary, and preview image
+      document.getElementById('pricingOutputDiv').innerHTML = '<p>Please select a <strong>Type</strong> and <strong>Color</strong> to see pricing and sizes.</p>';
+      document.getElementById('orderSummaryOutput').innerHTML = '';
+      filteredProduct = null;
+      updateImageAndPricing(); // This will show default image
+      // Hide similar products section
+      document.getElementById('similarProductsSection').style.display = 'none';
     }
-
-    // Reset pricing, summary, and preview image
-    document.getElementById('pricingOutputDiv').innerHTML = '<p>Please select a <strong>Type</strong> and <strong>Color</strong> to see pricing and sizes.</p>';
-    document.getElementById('orderSummaryOutput').innerHTML = '';
-    filteredProduct = null;
-    updateImageAndPricing();
   });
 
-  // When a color is selected
-  colorSelect.addEventListener('change', () => {
-    updateImageAndPricing();
+  // Toggle Color dropdown
+  selectedColor.addEventListener('click', (event) => {
+    event.stopPropagation(); // Prevent document click from closing immediately
+    // Only open if a type is selected
+    if (document.getElementById('typeSelect').value) {
+      customColorDropdown.classList.toggle('active');
+      // Close type dropdown if open
+      customTypeDropdown.classList.remove('active');
+    }
   });
+
+  // Select Color option
+  colorOptions.addEventListener('click', (event) => {
+    const selectedOption = event.target.closest('.option-item');
+    if (selectedOption) {
+      const color = selectedOption.dataset.value;
+      const imageSrc = selectedOption.querySelector('img').src; // Get image source
+
+      selectedColor.innerHTML = `<img src="${imageSrc}" alt="${color}" style="width:24px;height:24px;border-radius:4px;margin-right:8px;object-fit:cover;"><span>${color}</span><span class="dropdown-arrow"></span>`;
+      document.getElementById('colorSelect').value = color; // Update hidden select
+      customColorDropdown.classList.remove('active');
+      
+      updateImageAndPricing();
+      loadSimilarProducts(); // Load similar products when a color is selected
+    }
+  });
+
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', () => {
+    customTypeDropdown.classList.remove('active');
+    customColorDropdown.classList.remove('active');
+  });
+}
+
+function populateColorDropdown(selectedType) {
+  const productsOfType = products.filter(p => p.type === selectedType);
+  colorOptions.innerHTML = ''; // Clear previous options
+  
+  // Show color dropdown and label
+  customColorDropdown.style.display = 'grid'; // Use grid to align with label
+  document.querySelector('label[for="colorSelect"]').style.display = 'block';
+
+  const addedColors = new Set();
+  productsOfType.forEach(product => {
+    if (product.variants) {
+      product.variants.forEach(variant => {
+        if (!addedColors.has(variant.color)) {
+          addedColors.add(variant.color);
+
+          const imagePath = `Catlogue_icon/${product.type.toLowerCase().replace(/\s/g, '')}-page-${variant.page}.jpg`;
+          
+          const optionItem = document.createElement('div');
+          optionItem.classList.add('option-item');
+          optionItem.dataset.value = variant.color;
+          optionItem.innerHTML = `<img src="${imagePath}" alt="${variant.color} thumbnail"><span>${variant.color}</span>`;
+          colorOptions.appendChild(optionItem);
+        }
+      });
+    }
+  });
+
+  // Reset selected color display
+  selectedColor.innerHTML = `<span>Select Color</span><span class="dropdown-arrow"></span>`;
+  document.getElementById('colorSelect').value = ''; // Clear hidden select value
 }
 
 function updateImageAndPricing() {
@@ -110,7 +180,7 @@ function updateImageAndPricing() {
         img.src = imagePath;
         previewDiv.classList.add('animate-flip'); // Add the class to start the animation
     }, 10);
-    
+
     img.onerror = () => {
       img.src = 'Catlogue_icon/default.png';
       console.warn(`Image not found: ${imagePath}. Displaying default.`);
@@ -126,6 +196,8 @@ function updateImageAndPricing() {
       <p>Please select both <strong>Type</strong> and <strong>Color</strong>
       to see product details and pricing.</p>`;
     document.getElementById('orderSummaryOutput').innerHTML = '';
+    // Hide similar products section if selection is incomplete
+    document.getElementById('similarProductsSection').style.display = 'none';
   }
 }
 
@@ -140,7 +212,7 @@ function renderProductPricing(product) {
   const isPlainKurta = product.type === "Plain";
 
   let htmlContent = `
-    <h3> Available Sizes & Pricing For  <span style="color: Navy;">${product.color}</span> <span style="color: BlueViolet;">${product.type}</span> Kurta:</h3>
+    <h3>Available Sizes & Pricing for  <span style="color: #2980b9;">${product.color}</span> <span style="color: #3498db;">${product.type}</span> Kurta:</h3>
     <p class="instruction-text-2">
       <strong>Step 2:</strong> Enter the quantity for each size you want to order.
     </p>
@@ -159,7 +231,7 @@ function renderProductPricing(product) {
   `;
   pricingOutputDiv.innerHTML = htmlContent;
 
-  const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
+  const categoriesOrder = ['mens', 'ladies', 'kids'];
 
   categoriesOrder.forEach(category => {
     const tabPane = document.getElementById(`${category.toLowerCase()}-tab`);
@@ -178,22 +250,22 @@ function renderProductPricing(product) {
       });
 
       sortedSizeKeys.forEach(sizeKey => {
-        const MRP = sizes[sizeKey].MRP;
+        const mrp = sizes[sizeKey].mrp;
         const discountPercentage = 0.25; // 25% discount
-        const discountPrice = Math.round((MRP - (MRP * discountPercentage)) / 10) * 10; // Round to nearest 10
+        const discountPrice = Math.round((mrp - (mrp * discountPercentage)) / 10) * 10; // Round to nearest 10
 
-        // Conditionally render based on whether it's a Plain Kurta
+        // Conditionally render based on whether it's a plain kurta
         categoryHtml += `
           <div class="size-item ${isPlainKurta ? 'plain-kurta-item' : ''}">
             <label>${sizeKey}:</label>
             <input type="number" min="0" value="0"
               data-category="${category}"
               data-size="${sizeKey}"
-              data-mrp="${MRP}"
+              data-mrp="${mrp}"
               data-discount="${discountPrice}"
               class="qty-input"
               placeholder="Qty"/>
-            ${!isPlainKurta ? `<span class="mrp-price"> ₹${MRP}</span>` : ''}
+            ${!isPlainKurta ? `<span class="mrp-price"> ₹${mrp}</span>` : ''}
             ${!isPlainKurta ? `<span class="discount-price">Offer: ₹${discountPrice}</span>` : ''}
           </div>`;
       });
@@ -264,7 +336,7 @@ function showOrderSummary() {
 
   if (Object.keys(selectedItemsByCategory).length > 0) {
     htmlSummary += `<h3>Order Summary for ${filteredProduct.color} (${filteredProduct.type})</h3>`;
-    const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
+    const categoriesOrder = ['mens', 'ladies', 'kids'];
 
     categoriesOrder.forEach(category => {
       if (selectedItemsByCategory[category] && selectedItemsByCategory[category].length > 0) {
@@ -324,7 +396,7 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
     alert("Please fill in Customer Name and Contact Number before sending the order.");
     return;
   }
-  
+
   if (!address) {
     alert("Please fill in Delivery Address before sending the order.");
     return;
@@ -343,7 +415,7 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
 
   whatsappMessage += `*Product:* ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number}\n📄 *Catalogue:* Page ${filteredProduct.page} | File: ${filteredProduct.pdf ?? 'N/A'} \n\n`;
 
-  const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
+  const categoriesOrder = ['mens', 'ladies', 'kids'];
   let itemsSummary = [];
   categoriesOrder.forEach(category => {
     if (summaries.selectedItems[category]) {
@@ -371,7 +443,7 @@ document.getElementById("downloadPdfButton").addEventListener("click", () => {
     const customerName = document.getElementById('customerName').value.trim();
     const address = document.getElementById('deliveryAddress').value.trim();
     const contact = document.getElementById('contactNumber').value.trim();
-    
+
     if (!customerName || !contact || !address) {
         alert("Please fill in all customer details before generating the PDF.");
         return;
@@ -392,19 +464,19 @@ document.getElementById("downloadPdfButton").addEventListener("click", () => {
     y += 7;
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
-    doc.text("Exclusive Men'swear", 10, y);
+    doc.text("Exclusive Men's Wear", 10, y);
     y += 5;
     doc.text("Address: Garden Road, Chikhli.", 10, y);
     y += 5;
     doc.text("WhatsApp: 8866244409", 10, y);
     y += 5;
-    doc.text("Instagram: PLUSPOINTCHIKHLI", 10, y);
+    doc.text("Instagram: @pluspointchikhli", 10, y);
 
     // Order Summary Heading
     y += 15;
     doc.setFontSize(16);
     doc.setFont("helvetica", "bold");
-    doc.text("Order Summary", 10, y);
+    doc.text("ORDER SUMMARY", 10, y);
     y += 10;
 
     // Product Details
@@ -416,7 +488,7 @@ document.getElementById("downloadPdfButton").addEventListener("click", () => {
     y += 15;
 
     // Ordered Items by Category
-    const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
+    const categoriesOrder = ['mens', 'ladies', 'kids'];
     categoriesOrder.forEach(category => {
         if (summaries.selectedItems[category]) {
             doc.setFontSize(12);
@@ -461,5 +533,90 @@ document.getElementById("downloadPdfButton").addEventListener("click", () => {
     doc.text(`Contact: ${contact}`, 10, y);
 
     // Save PDF
-    doc.save(`Order-${filteredProduct.type}-${filteredProduct.color}.pdf`);
+    doc.save(`order-${filteredProduct.type}-${filteredProduct.color}.pdf`);
 });
+
+
+// New function to load similar products
+function loadSimilarProducts() {
+  const similarProductsGrid = document.getElementById('similarProductsGrid');
+  const similarProductsSection = document.getElementById('similarProductsSection');
+  similarProductsGrid.innerHTML = ''; // Clear previous similar products
+
+  if (!filteredProduct) {
+    similarProductsSection.style.display = 'none';
+    return;
+  }
+
+  similarProductsSection.style.display = 'block'; // Show the section
+
+  const currentType = filteredProduct.type;
+  const currentColor = filteredProduct.color;
+
+  // Filter products to find similar ones (same type, different colors)
+  const similarProducts = products
+    .filter(p => p.type === currentType) // Same type
+    .flatMap(p => p.variants.map(v => ({ // Get all variants
+      type: p.type,
+      color: v.color,
+      page: v.page
+    })))
+    .filter(v => v.color !== currentColor) // Exclude the currently selected color
+    .reduce((acc, current) => { // Ensure unique colors only
+      const x = acc.find(item => item.color === current.color);
+      if (!x) {
+        return acc.concat([current]);
+      } else {
+        return acc;
+      }
+    }, [])
+    .slice(0, 4); // Get up to 4 similar products
+
+  if (similarProducts.length > 0) {
+    similarProducts.forEach(prod => {
+      const imagePath = `Catlogue_icon/${prod.type.toLowerCase().replace(/\s/g, '')}-page-${prod.page}.jpg`;
+      const productItem = document.createElement('div');
+      productItem.classList.add('similar-product-item');
+      productItem.innerHTML = `
+        <img src="${imagePath}" alt="${prod.color} ${prod.type}">
+        <span>${prod.color}</span>
+      `;
+      // Optional: Add click listener to select this product
+      productItem.addEventListener('click', () => {
+        // Find the full product and variant to set dropdowns
+        const fullProduct = products.find(p => p.type === prod.type);
+        const fullVariant = fullProduct?.variants.find(v => v.color === prod.color);
+
+        if (fullProduct && fullVariant) {
+          // Update custom dropdown for type
+          selectedType.querySelector('span').textContent = fullProduct.type;
+          document.getElementById('typeSelect').value = fullProduct.type;
+
+          // Update color dropdown options and select the color
+          populateColorDropdown(fullProduct.type); // Repopulate colors first
+          selectedColor.innerHTML = `<img src="${imagePath}" alt="${fullVariant.color}" style="width:24px;height:24px;border-radius:4px;margin-right:8px;object-fit:cover;"><span>${fullVariant.color}</span><span class="dropdown-arrow"></span>`;
+          document.getElementById('colorSelect').value = fullVariant.color;
+          
+          updateImageAndPricing(); // Re-render everything
+          loadSimilarProducts(); // Reload similar products based on new selection
+        }
+      });
+      similarProductsGrid.appendChild(productItem);
+    });
+  } else {
+    similarProductsSection.style.display = 'none'; // Hide if no similar products
+  }
+}
+
+// Event listener for the "More Like This" button (optional, can trigger loadSimilarProducts)
+document.querySelector('.more-like-this-btn').addEventListener('click', () => {
+  // You can define what "More Like This" means. Here, it already loads similar products
+  // when a color is selected. This button could, for instance, scroll to the similar products section.
+  const similarProductsSection = document.getElementById('similarProductsSection');
+  if (similarProductsSection.style.display === 'block') {
+    similarProductsSection.scrollIntoView({ behavior: 'smooth' });
+  } else {
+    alert("Please select a product type and color first to see similar products.");
+  }
+});
+
