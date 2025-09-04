@@ -2,8 +2,8 @@ let products = [];
 let filteredProduct = null;
 
 const typeButtonsContainer = document.getElementById('typeButtonsContainer');
-const similarProductsSection = document.getElementById('similarProductsSection');
-const similarProductsGrid = document.getElementById('similarProductsGrid');
+const colorSelectionSection = document.getElementById('colorSelectionSection'); // Renamed
+const colorGrid = document.getElementById('colorGrid'); // Renamed
 
 window.onload = async () => {
   try {
@@ -15,14 +15,17 @@ window.onload = async () => {
     document.getElementById('previewImage').src = 'Catlogue_icon/default.png';
     document.getElementById("sendOrderWhatsapp").style.display = 'none';
     
-    // Initially hide similar products section
-    similarProductsSection.style.display = 'none';
+    // Initially hide color selection section
+    colorSelectionSection.style.display = 'none';
+    // Hide pricing output initially
+    document.getElementById('pricingOutputDiv').style.display = 'none';
 
     populateTypeButtons();
 
   } catch (error) {
     console.error("Error fetching products:", error);
     document.getElementById('pricingOutputDiv').innerHTML = '<p style="color: red;">Error loading product data. Please try again later.</p>';
+    document.getElementById('pricingOutputDiv').style.display = 'block'; // Show error message
   }
 };
 
@@ -35,15 +38,16 @@ function populateTypeButtons() {
     button.textContent = type;
     button.dataset.type = type;
     button.addEventListener('click', () => {
-      // Deactivate all buttons
+      // Deactivate all type buttons
       document.querySelectorAll('.type-button').forEach(btn => btn.classList.remove('active'));
-      // Activate the clicked button
+      // Activate the clicked type button
       button.classList.add('active');
       
-      // Load similar products (colors) for the selected type
-      loadSimilarProducts(type);
+      // Load colors for the selected type
+      loadColorsForType(type);
       
       // Reset other sections
+      document.getElementById('pricingOutputDiv').style.display = 'none'; // Hide pricing until color is selected
       document.getElementById('pricingOutputDiv').innerHTML = '<p>Please select a <strong>Type</strong> and <strong>Color</strong> to see pricing and sizes.</p>';
       document.getElementById('orderSummaryOutput').innerHTML = '';
       document.getElementById('previewImage').src = 'Catlogue_icon/default.png';
@@ -53,14 +57,15 @@ function populateTypeButtons() {
   });
 }
 
-function loadSimilarProducts(selectedType) {
-  similarProductsGrid.innerHTML = ''; // Clear previous products
-  similarProductsSection.style.display = 'block'; // Show the section
+// Renamed from loadSimilarProducts to loadColorsForType
+function loadColorsForType(selectedType) {
+  colorGrid.innerHTML = ''; // Clear previous colors
+  colorSelectionSection.style.display = 'block'; // Show the section
 
   const productOfType = products.find(p => p.type === selectedType);
 
   if (!productOfType || !productOfType.variants) {
-    similarProductsSection.style.display = 'none';
+    colorSelectionSection.style.display = 'none';
     return;
   }
 
@@ -69,30 +74,32 @@ function loadSimilarProducts(selectedType) {
     if (!addedColors.has(variant.color)) {
       addedColors.add(variant.color);
 
+      // Construct image path for color selection thumbnails
       const imagePath = `Catlogue_icon/${productOfType.type.toLowerCase().replace(/\s/g, '')}-page-${variant.page}.jpg`;
-      const productItem = document.createElement('div');
-      productItem.classList.add('similar-product-item');
-      productItem.innerHTML = `
+      const colorItem = document.createElement('div'); // Renamed from productItem
+      colorItem.classList.add('color-item'); // Renamed class
+      colorItem.innerHTML = `
         <img src="${imagePath}" alt="${variant.color} ${productOfType.type}">
         <span>${variant.color}</span>
       `;
-      productItem.dataset.type = productOfType.type;
-      productItem.dataset.color = variant.color;
-      
-      productItem.addEventListener('click', () => {
-        const type = productItem.dataset.type;
-        const color = productItem.dataset.color;
+      colorItem.dataset.type = productOfType.type;
+      colorItem.dataset.color = variant.color;
+      colorItem.dataset.page = variant.page; // Store page for direct image loading
+
+      colorItem.addEventListener('click', () => {
+        const type = colorItem.dataset.type;
+        const color = colorItem.dataset.color;
         
-        // Remove active class from all similar product items
-        document.querySelectorAll('.similar-product-item').forEach(item => item.classList.remove('active'));
+        // Remove active class from all color items
+        document.querySelectorAll('.color-item').forEach(item => item.classList.remove('active'));
         // Add active class to the clicked item
-        productItem.classList.add('active');
+        colorItem.classList.add('active');
 
         // Update the main preview image and pricing
         updateImageAndPricing(type, color);
       });
 
-      similarProductsGrid.appendChild(productItem);
+      colorGrid.appendChild(colorItem);
     }
   });
 }
@@ -128,11 +135,13 @@ function updateImageAndPricing(type, color) {
     };
 
     renderProductPricing(filteredProduct);
+    pricingOutputDiv.style.display = 'block'; // Show pricing div once a color is selected
   } else {
     filteredProduct = null;
     img.src = 'Catlogue_icon/default.png';
     previewDiv.classList.remove('animate-flip');
     pricingOutputDiv.innerHTML = `<p>Please select both <strong>Type</strong> and <strong>Color</strong> to see product details and pricing.</p>`;
+    pricingOutputDiv.style.display = 'block'; // Show message
     document.getElementById('orderSummaryOutput').innerHTML = '';
   }
 }
@@ -421,10 +430,10 @@ document.getElementById("downloadPdfButton").addEventListener("click", () => {
 
 // Event listener for the "More Like This" button
 document.querySelector('.more-like-this-btn').addEventListener('click', () => {
-    const similarProductsSection = document.getElementById('similarProductsSection');
-    if (similarProductsSection.style.display === 'block') {
-        similarProductsSection.scrollIntoView({ behavior: 'smooth' });
+    const colorSelectionSection = document.getElementById('colorSelectionSection'); // Renamed
+    if (colorSelectionSection.style.display === 'block') {
+        colorSelectionSection.scrollIntoView({ behavior: 'smooth' });
     } else {
-        alert("Please select a product type first to see similar products.");
+        alert("Please select a product type first to see available colors.");
     }
 });
