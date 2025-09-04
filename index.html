@@ -12,7 +12,7 @@
   <div class="container">
     <h1>Group Kurta Order</h1>
     <p class="instruction-text">
-      <strong>Step 1:</strong> Select a Kurta Type and Color to see product details and pricing.
+      <strong>Step 1:</strong> Type aur Color select karein.
     </p>
 
     <div class="image-preview" id="imagePreviewContainer">
@@ -22,41 +22,41 @@
       </button>
     </div>
 
-    <div class="form-section">
+    <div class="selection-section type-section">
       <label>Kurta Type:</label>
       <div class="type-buttons-container" id="typeButtonsContainer">
         </div>
     </div>
 
-    <div class="color-selection-section" id="colorSelectionSection">
+    <div class="selection-section color-section" id="colorSelectionSection">
       <h2>Select Color</h2>
       <div class="color-grid" id="colorGrid">
         </div>
     </div>
     
     <div id="pricingOutputDiv" class="pricing-section">
-      <p>Please select a <strong>Type</strong> and <strong>Color</strong> to see pricing and sizes.</p>
+      <p>Pehle Type aur Color select karein.</p>
     </div>
 
-    <button id="orderSummaryButton" class="action-button">Show Order Summary</button>
-
+    <button id="orderSummaryButton" class="action-button">Order Summary dekhein</button>
+    
     <div id="orderSummaryOutput" class="summary-section">
     </div>
 
     <div class="customer-section">
-      <h2>Your Details</h2>
-      <label for="customerName">Customer Name:</label>
-      <input type="text" id="customerName" placeholder="Enter your customer name" />
+      <h2>Aapki Details</h2>
+      <label for="customerName">Customer Ka Naam:</label>
+      <input type="text" id="customerName" placeholder="Naam likhein" />
 
       <label for="deliveryAddress">Address:</label>
-      <textarea id="deliveryAddress" rows="3" placeholder="Enter full address"></textarea>
+      <textarea id="deliveryAddress" rows="3" placeholder="Poora address likhein"></textarea>
 
       <label for="contactNumber">Contact Number:</label>
-      <input type="tel" id="contactNumber" placeholder="Enter your contact number" />
+      <input type="tel" id="contactNumber" placeholder="Contact number likhein" />
     </div>
 
-    <button id="downloadPdfButton" class="action-button primary-button">Download Order Form (PDF)</button>
-    <button id="sendOrderWhatsapp" class="action-button primary-button">Send Order on WhatsApp</button>
+    <button id="downloadPdfButton" class="action-button primary-button">Order Form PDF Download karein</button>
+    <button id="sendOrderWhatsapp" class="action-button primary-button">Order WhatsApp par bhejein</button>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
