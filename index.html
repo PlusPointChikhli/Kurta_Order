@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PLUS POINT Group Kurta Order</title>
+  <title>Plus Point Group Kurta Order</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
@@ -12,18 +13,41 @@
     <p class="instruction-text">
       <strong>Step 1:</strong> Select a Kurta Type and Color from the options below to see product details and pricing.
     </p>
-     <div class="image-preview" id="imagePreviewContainer">
+
+    <div class="image-preview" id="imagePreviewContainer">
       <img id="previewImage" src="Catlogue_icon/default.png" alt="Product Preview" />
+      <button class="more-like-this-btn">
+        <span class="icon">&#x271A;</span> More Like This
+      </button>
     </div>
 
     <div class="form-section">
       <label for="typeSelect">Kurta Type:</label>
-      <select id="typeSelect"></select>
+      <select id="typeSelect" class="hidden-select"></select>
+      <div class="custom-dropdown" id="customTypeDropdown">
+        <div class="selected-item" id="selectedType">
+          <span>Select Kurta Type</span>
+          <span class="dropdown-arrow"></span>
+        </div>
+        <div class="dropdown-options" id="typeOptions"></div>
+      </div>
 
       <label for="colorSelect">Color:</label>
-      <select id="colorSelect"></select>
+      <select id="colorSelect" class="hidden-select"></select>
+      <div class="custom-dropdown" id="customColorDropdown">
+        <div class="selected-item" id="selectedColor">
+          <span>Select Color</span>
+          <span class="dropdown-arrow"></span>
+        </div>
+        <div class="dropdown-options" id="colorOptions"></div>
+      </div>
     </div>
 
+    <div class="similar-products-section" id="similarProductsSection">
+      <h2>4 Similar Products</h2>
+      <div class="similar-products-grid" id="similarProductsGrid">
+        </div>
+    </div>
     <div id="pricingOutputDiv" class="pricing-section">
      <p>Please select a <strong>Type</strong> and <strong>Color</strong> to see pricing and sizes.</p>
     </div>
@@ -36,7 +60,7 @@
     <div class="customer-section">
       <h2>Your Details</h2>
       <label for="customerName">Customer Name:</label>
-      <input type="text" id="customerName" placeholder="Enter your Customer Name" />
+      <input type="text" id="customerName" placeholder="Enter your customer name" />
 
       <label for="deliveryAddress">Address:</label>
       <textarea id="deliveryAddress" rows="3" placeholder="Enter full address"></textarea>
@@ -46,7 +70,6 @@
     </div>
 
     <button id="downloadPdfButton" class="action-button primary-button">Download Order Form (PDF)</button>
-
     <button id="sendOrderWhatsapp" class="action-button primary-button">Send Order on WhatsApp</button>
   </div>
 
