@@ -190,13 +190,14 @@ h4 {
     border-color: #2980b9;
 }
 
-/* Color Selection Grid (as per your image) */
+/* Color Selection Grid */
 .color-section h2 {
     text-align: center;
     color: #34495e;
     margin-bottom: 25px;
 }
 
+/* FIX: 4-color grid on large screens */
 .color-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -234,7 +235,7 @@ h4 {
     width: 100%;
     height: auto;
     max-height: 120px;
-    object-fit: contain; /* Changed to 'contain' for better aspect ratio */
+    object-fit: contain;
     border-radius: 8px;
     margin-bottom: 10px;
     border: 2px solid #e0e0e0;
