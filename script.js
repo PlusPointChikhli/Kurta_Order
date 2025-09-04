@@ -164,7 +164,6 @@ function renderProductPricing(product) {
   `;
   pricingOutputDiv.innerHTML = htmlContent;
   
-  // FIX: categoriesOrder array is now in lowercase to match HTML IDs
   const categoriesOrder = ['mens', 'ladies', 'kids'];
 
   categoriesOrder.forEach(category => {
@@ -251,7 +250,9 @@ function showOrderSummary() {
       selectedItemsByCategory[category].push(itemDetails);
 
       totalItems += quantity;
-      totalPrice += itemDetails.lineTotal;
+      if (!isPlainKurta) {
+          totalPrice += itemDetails.lineTotal;
+      }
     }
   });
 
