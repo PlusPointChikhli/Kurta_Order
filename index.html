@@ -6,12 +6,13 @@
   <title>Plus Point Group Kurta Order</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
   <div class="container">
     <h1>Group Kurta Order</h1>
     <p class="instruction-text">
-      <strong>Step 1:</strong> Select a Kurta Type and Color from the options below to see product details and pricing.
+      <strong>Step 1:</strong> Select a Kurta Type and Color to see product details and pricing.
     </p>
 
     <div class="image-preview" id="imagePreviewContainer">
@@ -22,34 +23,19 @@
     </div>
 
     <div class="form-section">
-      <label for="typeSelect">Kurta Type:</label>
-      <select id="typeSelect" class="hidden-select"></select>
-      <div class="custom-dropdown" id="customTypeDropdown">
-        <div class="selected-item" id="selectedType">
-          <span>Select Kurta Type</span>
-          <span class="dropdown-arrow"></span>
+      <label>Kurta Type:</label>
+      <div class="type-buttons-container" id="typeButtonsContainer">
         </div>
-        <div class="dropdown-options" id="typeOptions"></div>
-      </div>
-
-      <label for="colorSelect">Color:</label>
-      <select id="colorSelect" class="hidden-select"></select>
-      <div class="custom-dropdown" id="customColorDropdown">
-        <div class="selected-item" id="selectedColor">
-          <span>Select Color</span>
-          <span class="dropdown-arrow"></span>
-        </div>
-        <div class="dropdown-options" id="colorOptions"></div>
-      </div>
     </div>
 
     <div class="similar-products-section" id="similarProductsSection">
-      <h2>4 Similar Products</h2>
+      <h2>Select Color</h2>
       <div class="similar-products-grid" id="similarProductsGrid">
         </div>
     </div>
+    
     <div id="pricingOutputDiv" class="pricing-section">
-     <p>Please select a <strong>Type</strong> and <strong>Color</strong> to see pricing and sizes.</p>
+      <p>Please select a <strong>Type</strong> and <strong>Color</strong> to see pricing and sizes.</p>
     </div>
 
     <button id="orderSummaryButton" class="action-button">Show Order Summary</button>
