@@ -257,14 +257,14 @@ function showOrderSummary() {
 
   if (Object.keys(selectedItemsByCategory).length > 0) {
     htmlSummary += `<h3>Order Summary for ${filteredProduct.color} (${filteredProduct.type})</h3>`;
-    const categoriesOrder = ['mens', 'ladies', 'kids'];
+    const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
 
     categoriesOrder.forEach(category => {
       if (selectedItemsByCategory[category] && selectedItemsByCategory[category].length > 0) {
         htmlSummary += `<h4>Category: ${category}</h4><table><thead><tr><th>Size</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>`;
 
         selectedItemsByCategory[category].forEach(item => {
-          htmlSummary += `<tr><td>${item.size}</td><td>${item.quantity}</td><td>₹${item.price}</td><td>₹${item.lineTotal.toFixed(2)}</td></tr>`;
+          htmlSummary += `<tr><td>${item.size}</td><td>${item.quantity}</td><td>₹${item.price.toFixed(2)}</td><td>₹${item.lineTotal.toFixed(2)}</td></tr>`;
         });
 
         htmlSummary += `</tbody></table>`;
@@ -311,97 +311,4 @@ document.getElementById("sendOrderWhatsapp").addEventListener("click", () => {
     return;
   }
   let whatsappMessage = `Namaste! Main ek group order dena chahta hoon:\n\n`;
-  whatsappMessage += `*Product:* ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number}\n📄 *Catalogue:* Page ${filteredProduct.page} | File: ${filteredProduct.pdf ?? 'N/A'} \n\n`;
-  const categoriesOrder = ['mens', 'ladies', 'kids'];
-  let itemsSummary = [];
-  categoriesOrder.forEach(category => {
-    if (summaries.selectedItems[category]) {
-      const sizeItems = summaries.selectedItems[category].map(item => `${item.size}-${item.quantity}`).join(' , ');
-      itemsSummary.push(`*${category}:* ${sizeItems}`);
-    }
-  });
-  whatsappMessage += itemsSummary.join(' \n ');
-  whatsappMessage += ` \n *Total Items:* ${summaries.totalItems} \n\n`;
-  whatsappMessage += `*Poora Total: ₹${summaries.totalPrice}* `;
-  whatsappMessage += `\n\n👥 *Customer Ka Naam:* ${customerName} \n🏠 *Address:* ${address} \n📞 *Contact:* ${contact} \n🗓️ *Tarikh: ${new Date().toLocaleDateString("en-IN")}`;
-  const whatsappURL = `https://wa.me/919722609460?text=${encodeURIComponent(whatsappMessage)}`;
-  window.open(whatsappURL, "_blank");
-});
-
-document.getElementById("downloadPdfButton").addEventListener("click", () => {
-    const { jsPDF } = window.jspdf;
-    const summaries = showOrderSummary();
-    const customerName = document.getElementById('customerName').value.trim();
-    const address = document.getElementById('deliveryAddress').value.trim();
-    const contact = document.getElementById('contactNumber').value.trim();
-    if (!customerName || !contact || !address) {
-        alert("Kripya PDF banane se pehle saari customer details bharein.");
-        return;
-    }
-    if (!filteredProduct || !summaries.selectedItems || Object.keys(summaries.selectedItems).length === 0) {
-        alert("Kripya PDF banane ke liye product select karein aur quantities daalein.");
-        return;
-    }
-    const doc = new jsPDF();
-    let y = 10;
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text("PLUS POINT", 10, y);
-    y += 7;
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    doc.text("Exclusive Men's Wear", 10, y);
-    y += 5;
-    doc.text("Address: Garden Road, Chikhli.", 10, y);
-    y += 5;
-    doc.text("WhatsApp: 8866244409", 10, y);
-    y += 5;
-    doc.text("Instagram: @pluspointchikhli", 10, y);
-    y += 15;
-    doc.setFontSize(16);
-    doc.setFont("helvetica", "bold");
-    doc.text("ORDER SUMMARY", 10, y);
-    y += 10;
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "normal");
-    doc.text(`Product: ${filteredProduct.type} – ${filteredProduct.color}`, 10, y);
-    y += 7;
-    doc.text(`Catalogue: Page ${filteredProduct.page} | File: ${filteredProduct.pdf ?? 'N/A'}`, 10, y);
-    y += 15;
-    const categoriesOrder = ['mens', 'ladies', 'kids'];
-    categoriesOrder.forEach(category => {
-        if (summaries.selectedItems[category]) {
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "bold");
-            doc.text(`Category: ${category}`, 10, y);
-            y += 7;
-            doc.setFontSize(10);
-            doc.setFont("helvetica", "normal");
-            summaries.selectedItems[category].forEach(item => {
-                doc.text(`Size: ${item.size} - Qty: ${item.quantity} - Price: ₹${item.price} - Total: ₹${item.lineTotal}`, 15, y);
-                y += 5;
-            });
-            y += 5;
-        }
-    });
-    y += 10;
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text(`Total Items: ${summaries.totalItems}`, 10, y);
-    y += 7;
-    doc.text(`Overall Total: ₹${summaries.totalPrice}`, 10, y);
-    y += 7;
-    y += 10;
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text("Your Details:", 10, y);
-    y += 7;
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    doc.text(`Customer Name: ${customerName}`, 10, y);
-    y += 5;
-    doc.text(`Address: ${address}`, 10, y);
-    y += 5;
-    doc.text(`Contact: ${contact}`, 10, y);
-    doc.save(`order-${filteredProduct.type}-${filteredProduct.color}.pdf`);
-});
+  whatsappMessage += `*Product:* ${filteredProduct.type} – ${filteredProduct.color} – No. ${filteredProduct.number}\n📄 *Catalogue:*
