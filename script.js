@@ -14,7 +14,7 @@ window.onload = async () => {
     products = await res.json();
     document.getElementById('previewImage').src = 'Catlogue_icon/default.png';
     document.getElementById("sendOrderWhatsapp").style.display = 'none';
-    
+
     colorSelectionSection.style.display = 'none';
     document.getElementById('pricingOutputDiv').style.display = 'none';
 
@@ -38,9 +38,9 @@ function populateTypeButtons() {
     button.addEventListener('click', () => {
       document.querySelectorAll('.type-button').forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
-      
+
       loadColorsForType(type);
-      
+
       document.getElementById('pricingOutputDiv').style.display = 'none';
       document.getElementById('pricingOutputDiv').innerHTML = '<p>Pehle Type aur Color select karein.</p>';
       document.getElementById('orderSummaryOutput').innerHTML = '';
@@ -76,11 +76,11 @@ function loadColorsForType(selectedType) {
       `;
       colorItem.dataset.type = productOfType.type;
       colorItem.dataset.color = variant.color;
-      
+
       colorItem.addEventListener('click', () => {
         const type = colorItem.dataset.type;
         const color = colorItem.dataset.color;
-        
+
         document.querySelectorAll('.color-item').forEach(item => item.classList.remove('active'));
         colorItem.classList.add('active');
 
@@ -161,7 +161,7 @@ function renderProductPricing(product) {
     </div>
   `;
   pricingOutputDiv.innerHTML = htmlContent;
-  
+
   const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
 
   categoriesOrder.forEach(category => {
@@ -235,7 +235,7 @@ function showOrderSummary() {
       const size = input.dataset.size;
       const mrp = parseFloat(input.dataset.mrp);
       const discountPrice = parseFloat(input.dataset.discount);
-      
+
       const priceToUse = isPlainKurta ? mrp : discountPrice;
 
       const itemDetails = {
@@ -404,14 +404,4 @@ document.getElementById("downloadPdfButton").addEventListener("click", () => {
     y += 5;
     doc.text(`Contact: ${contact}`, 10, y);
     doc.save(`order-${filteredProduct.type}-${filteredProduct.color}.pdf`);
-});
-
-
-document.querySelector('.more-like-this-btn').addEventListener('click', () => {
-    const colorSelectionSection = document.getElementById('colorSelectionSection');
-    if (colorSelectionSection.style.display === 'block') {
-        colorSelectionSection.scrollIntoView({ behavior: 'smooth' });
-    } else {
-        alert("Pehle type select karein taaki colors dikhai dein.");
-    }
 });
