@@ -230,7 +230,7 @@ h4 {
 }
 
 .color-item img {
-    width: 100%;
+    width: 25%;
     height: auto;
     max-height: 120px;
     object-fit: contain;
