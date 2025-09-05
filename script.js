@@ -162,7 +162,7 @@ function renderProductPricing(product) {
   `;
   pricingOutputDiv.innerHTML = htmlContent;
   
-  const categoriesOrder = ['mens', 'ladies', 'kids'];
+  const categoriesOrder = ['Mens', 'Ladies', 'Kids'];
 
   categoriesOrder.forEach(category => {
     const tabPane = document.getElementById(`${category.toLowerCase()}-tab`);
